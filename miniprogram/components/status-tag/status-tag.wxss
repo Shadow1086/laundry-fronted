@@ -1,0 +1,2 @@
+.status-tag { display: inline-block; padding: 4rpx 10rpx; border-radius: 8rpx; background: #e6f8eb; color: #13aa51; font-size: 18rpx; }
+.status-tag.warning { background: #fff3d7; color: #b77d22; }

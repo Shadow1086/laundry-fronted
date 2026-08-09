@@ -1,0 +1,65 @@
+<view class="home-shell">
+  <scroll-view class="home-scroll" scroll-y="true" enhanced="true" show-scrollbar="false">
+    <view class="hero">
+      <view class="hero-brand">
+        <view class="brand-mark">净</view>
+        <view>
+          <view class="brand-name">易净洗护</view>
+          <view class="brand-slogan">科技服务生活 <text>|</text> 快净更安心</view>
+        </view>
+      </view>
+      <view class="hero-orbit orbit-one"></view>
+      <view class="hero-orbit orbit-two"></view>
+    </view>
+    <view class="welcome-card fade-in">
+      <view>
+        <view class="eyebrow">WELCOME BACK</view>
+        <view class="welcome-title">你好，{{userName}}</view>
+        <view class="welcome-desc">手机号已绑定，服务状态随时可查</view>
+      </view>
+    </view>
+    <view class="cabinet-section fade-in delay-1">
+      <view class="cabinet-section-label"><text class="online-dot"></text>智能柜服务</view>
+      <view class="cabinet-actions">
+        <view class="cabinet-action cabinet-action-deposit" bindtap="scanCabinet" data-type="deposit" hover-class="cabinet-action-hover">
+          <view class="cabinet-action-icon">存</view>
+          <view class="cabinet-action-title">存衣物</view>
+          <view class="cabinet-action-desc">扫码投递洗护衣物</view>
+        </view>
+        <view class="cabinet-action cabinet-action-pickup" bindtap="scanCabinet" data-type="pickup" hover-class="cabinet-action-hover">
+          <view class="cabinet-action-icon">取</view>
+          <view class="cabinet-action-title">取走衣物</view>
+          <view class="cabinet-action-desc">下单完成后取回</view>
+        </view>
+      </view>
+    </view>
+    <view class="benefit-card fade-in delay-2" bindtap="showMembership">
+      <view>
+        <view class="benefit-label">会员年卡</view>
+        <view class="benefit-price"><text>¥</text>36</view>
+        <view class="benefit-note">全年分类折扣 · 下单自动享会员价</view>
+      </view>
+      <view class="benefit-action">立即了解 <text>→</text></view>
+    </view>
+    <view class="promo-banner fade-in delay-2" bindtap="showPromotion">
+      <view><text class="promo-tag">夏日秒杀</text><text class="promo-text"> 19.9 洗 2 双鞋</text></view>
+      <view class="promo-button">立即参与 <text>→</text></view>
+    </view>
+    <view class="section-heading fade-in delay-3">
+      <view class="section-title">附近柜机</view>
+      <view class="section-action" bindtap="chooseLocation">切换位置 <text>⌄</text></view>
+    </view>
+    <view class="location-tip fade-in delay-3"><text class="pin">⌖</text> 呼和浩特新城区 · 明祥园北门</view>
+    <view class="store-list fade-in delay-3">
+      <view class="store-item" wx:for="{{stores}}" wx:key="name" bindtap="selectStore" data-name="{{item.name}}">
+        <view class="store-avatar">{{item.short}}</view>
+        <view class="store-main">
+          <view class="store-name">{{item.name}} <text class="status-pill">可使用</text></view>
+          <view class="store-address">{{item.address}}</view>
+          <view class="store-meta"><text class="available-dot"></text>{{item.available}} 个空闲格口 · {{item.distance}}</view>
+        </view>
+        <view class="store-arrow">›</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

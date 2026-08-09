@@ -1,0 +1,50 @@
+<view class="list-shell">
+
+  <view class="filter-bar">
+    <view
+      wx:for="{{filters}}"
+      wx:key="key"
+      class="filter-tab {{activeFilter === item.key ? 'tab-active' : ''}}"
+      bindtap="tapFilter"
+      data-key="{{item.key}}"
+    >{{item.label}}</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-state">
+    <view class="loading-dot"></view>
+    <view class="loading-text">加载中…</view>
+  </view>
+
+  <block wx:elif="{{!filtered.length}}">
+    <empty-state title="暂无订单" description="快去首页下单，开启洗护之旅" />
+  </block>
+
+  <block wx:else>
+    <view
+      wx:for="{{filtered}}"
+      wx:key="id"
+      class="order-card"
+      hover-class="card-hover"
+      bindtap="goDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="card-top">
+        <view class="card-id">{{item.id}}</view>
+        <view class="status-tag tone-{{item.statusConfig.tone}}">{{item.statusConfig.label}}</view>
+      </view>
+      <view class="card-meta">
+        <text class="meta-date">{{item.createdAt}}</text>
+        <text class="meta-dot">·</text>
+        <text class="meta-items">{{item.itemsSummary}}</text>
+      </view>
+      <view class="card-footer">
+        <view class="price-row">
+          <text class="price-label">预估</text>
+          <text class="price-val">¥{{item.estimate}}</text>
+        </view>
+        <view class="detail-link">查看详情 ›</view>
+      </view>
+    </view>
+  </block>
+
+</view>

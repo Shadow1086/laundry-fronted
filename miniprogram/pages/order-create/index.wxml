@@ -1,0 +1,197 @@
+<view class="order-shell {{showSelection ? 'selection-open' : ''}} {{confirmMode ? 'confirm-open' : ''}}">
+  <view class="order-intro">
+    <view class="location-header">
+      <view class="location-main">
+        <text class="location-name">{{selectedStoreInfo.name}}</text>
+        <text class="location-status">营业中</text>
+        <text class="location-type">智能柜</text>
+      </view>
+      <view class="switch-store" hover-class="switch-store-hover" bindtap="chooseLocation">切换营业点</view>
+    </view>
+    <view class="location-address">
+      <text class="location-pin">⌖</text>
+      <text class="location-address-text">{{selectedStoreInfo.address}}</text>
+    </view>
+  </view>
+
+  <view class="order-body">
+    <view class="catalog-layout">
+      <view class="group-nav">
+        <view
+          wx:for="{{clothingGroups}}"
+          wx:key="key"
+          class="group-nav-item {{activeGroupKey === item.key ? 'active' : ''}}"
+          bindtap="selectGroup"
+          data-key="{{item.key}}"
+        >
+          <view class="group-nav-icon">{{item.icon}}</view>
+          <view class="group-nav-name">{{item.name}}</view>
+          <view wx:if="{{item.selectedCount > 0}}" class="group-badge">{{item.selectedCount}}</view>
+        </view>
+      </view>
+
+      <scroll-view class="item-panel" scroll-y="true" scroll-into-view="{{scrollIntoView}}" enhanced="true" show-scrollbar="false">
+        <view id="item-panel-top"></view>
+
+        <view class="item-list">
+          <view wx:for="{{activeGroup.items}}" wx:key="id" class="item-card">
+            <view class="item-name">{{item.name}}</view>
+
+            <block wx:if="{{item.images && item.images.length > 0}}">
+              <scroll-view class="item-gallery" scroll-x="true" enhanced="true" show-scrollbar="false">
+                <view class="gallery-track">
+                  <image
+                    wx:for="{{item.images}}"
+                    wx:for-item="imageUrl"
+                    wx:key="*this"
+                    class="item-image"
+                    src="{{imageUrl}}"
+                    mode="aspectFill"
+                    bindtap="previewItemImage"
+                    data-current="{{imageUrl}}"
+                    data-images="{{item.images}}"
+                  ></image>
+                </view>
+              </scroll-view>
+            </block>
+
+            <view class="item-detail">
+              <text class="detail-label">分类</text>
+              <text class="detail-value">{{item.serviceCategory}}</text>
+            </view>
+            <view class="item-detail">
+              <text class="detail-label">范围</text>
+              <text class="detail-value">{{item.scope}}</text>
+            </view>
+            <view class="item-detail">
+              <text class="detail-label">洗护</text>
+              <text class="detail-value">{{item.description}}</text>
+            </view>
+
+            <view class="item-card-footer">
+              <view class="price-block">
+                <view class="item-price"><text>¥</text>{{item.price}}</view>
+                <view wx:if="{{item.discount}}" class="member-price">会员 {{item.discount}} 折</view>
+              </view>
+              <view class="stepper">
+                <view class="step-button {{item.count === 0 ? 'disabled' : ''}}" hover-class="step-button-hover" bindtap="decrease" data-id="{{item.id}}">−</view>
+                <view class="step-number">{{item.count}}</view>
+                <view class="step-button plus" hover-class="plus-button-hover" bindtap="increase" data-id="{{item.id}}">＋</view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="scroll-bottom-spacer"></view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <view wx:if="{{confirmMode}}" class="confirm-panel">
+    <view class="confirm-head">
+      <view class="confirm-title">确认订单</view>
+      <view class="confirm-price"><text>¥</text>{{estimate}}</view>
+    </view>
+    <view wx:if="{{inlineMessage}}" class="confirm-message">{{inlineMessage}}</view>
+    <view class="confirm-summary">
+      <view class="confirm-row">
+        <text class="confirm-label">衣物</text>
+        <text class="confirm-value">{{selectedCount}} 件</text>
+      </view>
+      <view class="confirm-row">
+        <text class="confirm-label">投放点</text>
+        <text class="confirm-value store-value">{{selectedStore}}</text>
+      </view>
+    </view>
+    <view class="confirm-cabinet">
+      <view class="confirm-cabinet-head">
+        <view class="confirm-cabinet-title">选择柜型</view>
+        <view class="confirm-cabinet-hint">根据衣物数量选择</view>
+      </view>
+      <view class="cabinet-types">
+        <view class="cabinet-type {{cabinetType === 'small' ? 'selected' : ''}}" hover-class="cabinet-type-hover" bindtap="selectCabinetType" data-type="small">
+          <view class="cabinet-type-head">
+            <view class="cabinet-size">小柜</view>
+            <view class="radio-dot"></view>
+          </view>
+          <view class="cabinet-desc">少量日常衣物</view>
+          <view class="cabinet-stock">空闲 12 格</view>
+        </view>
+        <view class="cabinet-type {{cabinetType === 'large' ? 'selected' : ''}}" hover-class="cabinet-type-hover" bindtap="selectCabinetType" data-type="large">
+          <view class="cabinet-type-head">
+            <view class="cabinet-size">大柜</view>
+            <view class="radio-dot"></view>
+          </view>
+          <view class="cabinet-desc">大件或多件衣物</view>
+          <view class="cabinet-stock">空闲 6 格</view>
+        </view>
+      </view>
+      <view class="notice-line">
+        <view class="notice-icon">i</view>
+        <view>提交后系统会按所选柜型匹配空闲格口</view>
+      </view>
+    </view>
+    <view class="confirm-actions">
+      <button class="secondary-button" bindtap="backToEdit"><text>返回修改</text></button>
+      <button class="primary-button" bindtap="submitOrder" loading="{{submitState === 'loading'}}"><text>{{submitState === 'success' ? '已提交' : '提交订单'}}</text></button>
+    </view>
+  </view>
+
+  <view wx:else class="order-action-bar">
+    <view wx:if="{{inlineMessage}}" class="action-message">{{inlineMessage}}</view>
+    <view class="order-action-row">
+      <view class="selection-trigger" hover-class="selection-trigger-hover" bindtap="toggleSelection">
+        <view class="selection-copy">
+          <view>已选 {{selectedCount}} 件</view>
+          <text>合计 ¥{{estimate}}</text>
+        </view>
+        <text class="selection-detail">{{showSelection ? '收起' : '明细'}} ›</text>
+      </view>
+      <view
+        class="submit-button {{!selectedCount ? 'disabled' : ''}}"
+        hover-class="{{selectedCount ? 'submit-button-hover' : 'none'}}"
+        bindtap="beginConfirm"
+      >
+        <text>确认下单</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{showSelection}}" class="panel-mask" bindtap="toggleSelection"></view>
+  <view wx:if="{{showSelection}}" class="selected-panel">
+    <view class="selected-panel-head">
+      <view class="selected-panel-title">已选衣物 <text>{{selectedCount}} 件</text></view>
+      <view class="collapse-button" bindtap="toggleSelection">收起</view>
+    </view>
+    <scroll-view class="selected-list" scroll-y="true" show-scrollbar="false">
+      <view wx:if="{{!selectedItems.length}}" class="selected-empty">还没有选择衣物</view>
+      <view wx:for="{{selectedItems}}" wx:key="id" class="selected-item">
+        <view class="selected-item-info">
+          <view class="selected-item-name">{{item.name}}</view>
+          <view class="selected-item-price">¥{{item.price}} / 件 · {{item.categoryName}}</view>
+        </view>
+        <view class="selected-item-actions">
+          <view class="remove-item" bindtap="removeClothing" data-id="{{item.id}}">删除</view>
+          <view class="stepper compact-stepper">
+            <view class="step-button" bindtap="decrease" data-id="{{item.id}}">−</view>
+            <view class="step-number">{{item.count}}</view>
+            <view class="step-button plus" bindtap="increase" data-id="{{item.id}}">＋</view>
+          </view>
+        </view>
+      </view>
+      <view class="continue-adding" bindtap="continueAdding">继续添加衣物</view>
+    </scroll-view>
+    <view class="selected-footer">
+      <view class="selected-total">
+        <view class="selected-total-label">预估合计</view>
+        <view class="selected-total-price"><text>¥</text>{{estimate}}</view>
+      </view>
+      <view
+        class="selected-submit {{!selectedCount ? 'disabled' : ''}}"
+        hover-class="{{selectedCount ? 'selected-submit-hover' : 'none'}}"
+        bindtap="beginConfirm"
+      >
+        <text>确认下单</text>
+      </view>
+    </view>
+  </view>
+</view>

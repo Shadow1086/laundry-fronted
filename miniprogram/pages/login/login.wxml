@@ -1,0 +1,19 @@
+<view class="login-page">
+  <view class="login-orb orb-a"></view><view class="login-orb orb-b"></view>
+  <view class="login-brand"><view class="brand-mark">净</view><view><view class="brand-name">易净洗护</view><view class="brand-caption">把洁净交给值得信赖的人</view></view></view>
+  <view class="login-card">
+    <view class="login-kicker">WELCOME TO EASY CLEAN</view>
+    <view class="login-title">手机号登录</view>
+    <view class="login-copy">绑定手机号即可使用下单、存衣和取衣服务。</view>
+    <view class="phone-preview">
+      <view class="phone-icon">☎</view>
+      <view class="phone-preview-copy">
+        <view class="phone-preview-title">手机号快捷登录</view>
+        <view class="phone-preview-note">仅用于订单通知和柜机取衣</view>
+      </view>
+    </view>
+    <button class="phone-button" open-type="{{demoMode ? '' : 'getPhoneNumber'}}" bindtap="handleLoginTap" bindgetphonenumber="handlePhoneNumber" loading="{{loading}}">手机号快捷登录</button>
+    <view wx:if="{{message}}" class="inline-message {{messageType}}">{{message}}</view>
+    <view class="login-foot">登录即代表同意易净洗护的服务条款与隐私说明</view>
+  </view>
+</view>

@@ -1,0 +1,1 @@
+.placeholder-page { min-height: 100vh; padding: 160rpx 48rpx; box-sizing: border-box; background: #f3f6f4; }.placeholder-kicker { color: #1bb658; font-size: 20rpx; letter-spacing: 4rpx; }.placeholder-title { color: #173126; font-size: 48rpx; font-weight: 700; margin-top: 18rpx; }.placeholder-copy { color: #81948a; font-size: 25rpx; line-height: 1.7; margin-top: 20rpx; }

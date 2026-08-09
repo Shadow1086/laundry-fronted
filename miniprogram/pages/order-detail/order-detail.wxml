@@ -1,0 +1,79 @@
+<view class="detail-shell">
+  <view wx:if="{{loading}}" class="loading-state">
+    <view class="loading-dot"></view>
+    <view class="loading-text">加载中…</view>
+  </view>
+
+  <block wx:elif="{{order}}">
+    <view class="status-header status-{{order.status}}">
+      <view class="status-main">
+        <view class="status-label">{{statusInfo.label}}</view>
+        <view class="status-hint">{{statusInfo.hint}}</view>
+      </view>
+      <view class="status-badge">{{statusInfo.icon}}</view>
+    </view>
+
+    <view class="progress-track">
+      <view wx:for="{{progressSteps}}" wx:key="key" class="progress-step {{item.done ? 'step-done' : ''}} {{item.active ? 'step-active' : ''}}">
+        <view class="step-dot"></view>
+        <view class="step-name">{{item.name}}</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-head">洗护衣物</view>
+      <view wx:for="{{order.items}}" wx:key="name" class="item-row">
+        <view class="item-info">
+          <view class="item-name">{{item.name}}</view>
+          <view class="item-category">{{item.categoryName}}</view>
+        </view>
+        <view class="item-right">
+          <view class="item-count">× {{item.count}}</view>
+          <view class="item-price">¥{{item.price}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-head">订单信息</view>
+      <view class="info-row">
+        <text class="info-label">投放网点</text>
+        <text class="info-value">{{order.storeName}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">柜型</text>
+        <text class="info-value">{{order.cabinetType === 'small' ? '小柜' : '大柜'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">下单时间</text>
+        <text class="info-value">{{order.createdAt}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">订单编号</text>
+        <text class="info-value info-id">{{order.id}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-head">价格信息</view>
+      <view class="info-row">
+        <text class="info-label">预估金额</text>
+        <text class="info-value">¥{{order.estimate}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">实付金额</text>
+        <text wx:if="{{order.finalPrice}}" class="info-value price-confirmed">¥{{order.finalPrice}}</text>
+        <text wx:else class="info-value info-pending">商家验收后确认</text>
+      </view>
+    </view>
+
+    <view wx:if="{{order.status === 'ready' || order.status === 'completed'}}" class="action-section">
+      <view wx:if="{{order.status === 'ready'}}" class="btn-primary" hover-class="btn-hover" bindtap="scanPickup">
+        扫码取衣
+      </view>
+      <view wx:if="{{order.status === 'completed'}}" class="btn-secondary" hover-class="btn-hover" bindtap="applyRewash">
+        申请反洗
+      </view>
+    </view>
+  </block>
+</view>
