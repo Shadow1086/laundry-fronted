@@ -1,28 +1,45 @@
 {
   "pages": [
-    "pages/login/login",
     "pages/home/index",
+    "pages/legal/index",
     "pages/order-create/index",
+    "pages/cabinet-map/index",
     "pages/profile/index",
+    "pages/profile-edit/index",
     "pages/admin-entry/index",
+    "pages/order-confirm/index",
     "pages/order-list/order-list",
     "pages/order-detail/order-detail",
+    "pages/rewash-apply/index",
     "pages/scan-cabinet/scan-cabinet",
-    "pages/command-result/command-result"
+    "pages/command-result/command-result",
+    "pages/subscribe-message/index",
+    "pages/area-manager/index",
+    "pages/laundry-staff/index",
+    "pages/printer/index"
   ],
   "window": {
     "backgroundColor": "#F3F6F4",
-    "backgroundTextStyle": "light",
+    "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#F3F6F4",
-    "navigationBarTitleText": "易净洗护",
+    "navigationBarTitleText": "洛克洗护",
     "navigationBarTextStyle": "black"
   },
   "sitemapLocation": "sitemap.json",
   "style": "v2",
   "lazyCodeLoading": "requiredComponents",
+  "requiredPrivateInfos": ["getLocation"],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于推荐距离您较近的洗护柜机"
+    },
+    "scope.bluetooth": {
+      "desc": "用于搜索并连接洗护标签打印机"
+    }
+  },
   "tabBar": {
     "color": "#91a099",
-    "selectedColor": "#188c59",
+    "selectedColor": "#286e4f",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [

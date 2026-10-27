@@ -1,4 +1,29 @@
-/**app.wxss**/
+/** 洛克洗护全局视觉基线：松针绿、雾白和少量暖金。 */
+page {
+  --brand-900: #15382a;
+  --brand-700: #236b4b;
+  --brand-600: #2f805b;
+  --brand-100: #e4f2e9;
+  --ink-900: #17231f;
+  --ink-600: #566b60;
+  --ink-400: #8b9892;
+  --line: #e3ebe6;
+  --surface: #ffffff;
+  --canvas: #f3f6f4;
+  --accent: #e8bd57;
+  --page-gutter: 24rpx;
+  --safe-bottom: env(safe-area-inset-bottom);
+  --tabbar-space: 112rpx;
+  min-height: 100%;
+  color: var(--ink-900);
+  background: var(--canvas);
+  font-family: "PingFang SC", "Hiragino Sans GB", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+view, text, image, button, input, scroll-view, map {
+  box-sizing: border-box;
+}
 .container {
   display: flex;
   flex-direction: column;
@@ -8,6 +33,9 @@
 
 button {
   background: initial;
+  font-family: inherit;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 button:focus{
@@ -19,9 +47,43 @@ button::after{
 }
 
 
-page {
-  background: #f3f6f4;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+button[disabled] { opacity: .58; }
+
+button,
+[bindtap] {
+  -webkit-tap-highlight-color: transparent;
 }
+
+.btn-hover,
+.card-hover,
+.entry-hover,
+.cabinet-action-hover,
+.selection-trigger-hover {
+  opacity: .78;
+}
+
+/* 本地图标资源统一尺寸，容器继续负责背景色和交互状态。 */
+.cabinet-action-icon image { width: 48rpx; height: 48rpx; }
+.phone-icon image { width: 38rpx; height: 38rpx; }
+.stat-icon image { width: 29rpx; height: 29rpx; }
+.function-icon image { width: 32rpx; height: 32rpx; }
+.admin-mark image { width: 48rpx; height: 48rpx; }
+.entry-icon image { width: 36rpx; height: 36rpx; }
+.scan-icon image { width: 46rpx; height: 46rpx; }
+.camera-icon image { width: 66rpx; height: 66rpx; }
+.map-action image { width: 24rpx; height: 24rpx; }
+.group-nav-icon image { width: 32rpx; height: 32rpx; }
+.notice-icon image { width: 25rpx; height: 25rpx; }
+.scanner-mark image { width: 54rpx; height: 54rpx; }
+.hero-icon image { width: 46rpx; height: 46rpx; }
+.error-tip-mark image { width: 26rpx; height: 26rpx; }
+.status-badge image { width: 48rpx; height: 48rpx; }
+.list-btn-call image { width: 27rpx; height: 27rpx; }
+.safe-tip text image { width: 23rpx; height: 23rpx; }
+.agreement-row { margin-top: 24rpx; font-size: 24rpx; line-height: 1.8; color: #53665c; white-space: normal; }
+.agreement-link { color: #286e4f; padding: 8rpx 0; }
+.agreement-consent { display: flex; align-items: flex-start; gap: 8rpx; margin-top: 24rpx; color: #6c7b73; font-size: 23rpx; line-height: 40rpx; }
+.agreement-check { flex: 0 0 48rpx; width: 48rpx; }
+.agreement-check-target { display: flex; align-items: center; justify-content: center; width: 48rpx; height: 48rpx; margin-top: -4rpx; }
+.agreement-check checkbox { transform: scale(.68); transform-origin: center; }
+.agreement-copy { flex: 1; min-width: 0; text-align: left; overflow-wrap: break-word; }

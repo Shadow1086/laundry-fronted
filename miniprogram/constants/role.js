@@ -1,0 +1,39 @@
+// 后端账号类型 → 前端角色的映射，以及角色之间的权限包含关系。
+// 注意：这里的角色只用于小程序端的 UI 引导和路由守卫，
+// 本地存储可被篡改，真正的权限校验必须由后端接口完成。
+
+const ACCOUNT_TYPE = {
+  CUSTOMER: 'CUSTOMER',
+  AREA_ADMIN: 'AREA_ADMIN',
+  STAFF: 'STAFF',
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  PLATFORM_OWNER: 'PLATFORM_OWNER',
+};
+
+const ROLE = {
+  USER: 'user',
+  MANAGER: 'manager',
+  STAFF: 'staff',
+  ADMIN: 'admin',
+};
+
+const ACCOUNT_TYPE_ROLE = {
+  [ACCOUNT_TYPE.CUSTOMER]: ROLE.USER,
+  [ACCOUNT_TYPE.AREA_ADMIN]: ROLE.MANAGER,
+  [ACCOUNT_TYPE.STAFF]: ROLE.STAFF,
+  [ACCOUNT_TYPE.SUPER_ADMIN]: ROLE.ADMIN,
+  [ACCOUNT_TYPE.PLATFORM_OWNER]: ROLE.ADMIN,
+};
+
+// 每个角色实际持有的访问权限：超管/平台方涵盖区域管理员与洗衣工的全部页面。
+const ROLE_GRANTS = {
+  [ROLE.ADMIN]: [ROLE.ADMIN, ROLE.MANAGER, ROLE.STAFF, ROLE.USER],
+  [ROLE.MANAGER]: [ROLE.MANAGER, ROLE.USER],
+  [ROLE.STAFF]: [ROLE.STAFF, ROLE.USER],
+  [ROLE.USER]: [ROLE.USER],
+};
+
+// 可以进入管理员入口页的角色。
+const ADMIN_ROLES = [ROLE.ADMIN, ROLE.MANAGER, ROLE.STAFF];
+
+module.exports = { ACCOUNT_TYPE, ACCOUNT_TYPE_ROLE, ADMIN_ROLES, ROLE, ROLE_GRANTS };

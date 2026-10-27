@@ -1,19 +1,24 @@
 <view class="login-page">
   <view class="login-orb orb-a"></view><view class="login-orb orb-b"></view>
-  <view class="login-brand"><view class="brand-mark">净</view><view><view class="brand-name">易净洗护</view><view class="brand-caption">把洁净交给值得信赖的人</view></view></view>
+  <view class="login-brand"><view class="brand-mark">净</view><view><view class="brand-name">洛克洗护</view><view class="brand-caption">把洁净交给值得信赖的人</view></view></view>
   <view class="login-card">
-    <view class="login-kicker">WELCOME TO EASY CLEAN</view>
+    <view class="login-kicker">WELCOME TO LOCK LAUNDRY</view>
     <view class="login-title">手机号登录</view>
     <view class="login-copy">绑定手机号即可使用下单、存衣和取衣服务。</view>
     <view class="phone-preview">
-      <view class="phone-icon">☎</view>
+      <view class="phone-icon"><image src="/assets/icons/smartphone.svg" mode="aspectFit" /></view>
       <view class="phone-preview-copy">
         <view class="phone-preview-title">手机号快捷登录</view>
         <view class="phone-preview-note">仅用于订单通知和柜机取衣</view>
       </view>
     </view>
-    <button class="phone-button" open-type="{{demoMode ? '' : 'getPhoneNumber'}}" bindtap="handleLoginTap" bindgetphonenumber="handlePhoneNumber" loading="{{loading}}">手机号快捷登录</button>
+    <button wx:if="{{agreementAccepted}}" class="phone-button" open-type="getPhoneNumber" bindgetphonenumber="handlePhoneNumber" loading="{{loading}}" disabled="{{loading}}">手机号快捷登录</button>
+    <button wx:else class="phone-button" bindtap="requestAgreement">手机号快捷登录</button>
     <view wx:if="{{message}}" class="inline-message {{messageType}}">{{message}}</view>
-    <view class="login-foot">登录即代表同意易净洗护的服务条款与隐私说明</view>
+    <view class="agreement-consent">
+      <checkbox-group class="agreement-check" bindchange="changeAgreement"><label class="agreement-check-target"><checkbox value="agree" checked="{{agreementAccepted}}" color="#286e4f" /></label></checkbox-group>
+      <view class="agreement-copy"><text>我已阅读并同意</text><text class="agreement-link" data-type="service" bindtap="openAgreement">《用户服务协议》</text><text>及</text><text class="agreement-link" data-type="privacy" bindtap="openAgreement">《隐私政策》</text></view>
+    </view>
+    <button bindtap="browseHome">暂不登录，继续浏览</button>
   </view>
 </view>

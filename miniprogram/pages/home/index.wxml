@@ -4,7 +4,7 @@
       <view class="hero-brand">
         <view class="brand-mark">净</view>
         <view>
-          <view class="brand-name">易净洗护</view>
+          <view class="brand-name">洛克洗护</view>
           <view class="brand-slogan">科技服务生活 <text>|</text> 快净更安心</view>
         </view>
       </view>
@@ -15,42 +15,44 @@
       <view>
         <view class="eyebrow">WELCOME BACK</view>
         <view class="welcome-title">你好，{{userName}}</view>
-        <view class="welcome-desc">手机号已绑定，服务状态随时可查</view>
+        <view class="welcome-desc">{{authenticated ? '洗护进度随时可查' : '欢迎浏览柜机与洗护服务'}}</view>
+        <view wx:if="{{!authenticated}}" class="section-action" bindtap="requireAuth">登录 / 注册</view>
+      </view>
+      <view class="welcome-orders" bindtap="openOrders" hover-class="welcome-orders-hover">
+        <image src="/assets/icons/订单.svg" mode="aspectFit" />
+        <text>我的订单</text>
+        <text class="welcome-orders-arrow">›</text>
       </view>
     </view>
     <view class="cabinet-section fade-in delay-1">
       <view class="cabinet-section-label"><text class="online-dot"></text>智能柜服务</view>
       <view class="cabinet-actions">
         <view class="cabinet-action cabinet-action-deposit" bindtap="scanCabinet" data-type="deposit" hover-class="cabinet-action-hover">
-          <view class="cabinet-action-icon">存</view>
-          <view class="cabinet-action-title">存衣物</view>
-          <view class="cabinet-action-desc">扫码投递洗护衣物</view>
+          <view class="cabinet-action-icon"><image src="/assets/icons/home-wash.svg" mode="aspectFit" /></view>
+          <view class="cabinet-action-title">我要下单</view>
+          <view class="cabinet-action-desc">选衣物与投放柜机</view>
         </view>
         <view class="cabinet-action cabinet-action-pickup" bindtap="scanCabinet" data-type="pickup" hover-class="cabinet-action-hover">
-          <view class="cabinet-action-icon">取</view>
-          <view class="cabinet-action-title">取走衣物</view>
-          <view class="cabinet-action-desc">下单完成后取回</view>
+          <view class="cabinet-action-icon"><image src="/assets/icons/home-pickup.svg" mode="aspectFit" /></view>
+          <view class="cabinet-action-title">取衣开柜</view>
+          <view class="cabinet-action-desc">本人订单或凭码代取</view>
         </view>
       </view>
     </view>
-    <view class="benefit-card fade-in delay-2" bindtap="showMembership">
+    <view wx:if="{{!isMember}}" class="benefit-card fade-in delay-2" bindtap="showMembership">
       <view>
         <view class="benefit-label">会员年卡</view>
         <view class="benefit-price"><text>¥</text>36</view>
         <view class="benefit-note">全年分类折扣 · 下单自动享会员价</view>
       </view>
-      <view class="benefit-action">立即了解 <text>→</text></view>
-    </view>
-    <view class="promo-banner fade-in delay-2" bindtap="showPromotion">
-      <view><text class="promo-tag">夏日秒杀</text><text class="promo-text"> 19.9 洗 2 双鞋</text></view>
-      <view class="promo-button">立即参与 <text>→</text></view>
+      <view class="benefit-action">立即购买 <text>→</text></view>
     </view>
     <view class="section-heading fade-in delay-3">
       <view class="section-title">附近柜机</view>
       <view class="section-action" bindtap="chooseLocation">切换位置 <text>⌄</text></view>
     </view>
-    <view class="location-tip fade-in delay-3"><text class="pin">⌖</text> 呼和浩特新城区 · 明祥园北门</view>
-    <view class="store-list fade-in delay-3">
+    <view class="location-tip fade-in delay-3" bindtap="openCabinetMap"><image class="pin" src="/assets/icons/map-pin.svg" mode="aspectFit" />{{selectedStoreInfo ? selectedStoreInfo.address : '正在获取附近柜机'}}</view>
+    <view wx:if="{{storesLoading}}" class="store-list fade-in delay-3"><view class="store-address">正在加载柜机数据…</view></view><view wx:elif="{{storesMessage}}" class="store-list fade-in delay-3"><view class="store-address">{{storesMessage}}</view></view><view wx:else class="store-list fade-in delay-3">
       <view class="store-item" wx:for="{{stores}}" wx:key="name" bindtap="selectStore" data-name="{{item.name}}">
         <view class="store-avatar">{{item.short}}</view>
         <view class="store-main">
@@ -61,5 +63,36 @@
         <view class="store-arrow">›</view>
       </view>
     </view>
+    <view class="home-legal-footer">
+      <view class="home-legal-links">
+        <text class="home-legal-link" data-type="service" bindtap="openAgreement">用户服务协议</text>
+        <text class="home-legal-divider">|</text>
+        <text class="home-legal-link" data-type="privacy" bindtap="openAgreement">隐私政策</text>
+      </view>
+    </view>
   </scroll-view>
+  <view wx:if="{{!authenticated && authVisible}}" class="auth-gate">
+    <view class="auth-gate-backdrop"></view>
+    <view class="auth-card">
+      <view class="auth-handle"></view>
+      <view class="auth-dismiss" bindtap="dismissAuth">暂不授权</view>
+      <view class="auth-kicker">首次使用</view>
+      <view class="auth-title">授权手机号，立即开始洗护</view>
+      <view class="auth-copy">仅用于订单通知、存衣和取衣验证，不会公开展示。</view>
+      <button
+        wx:if="{{agreementAccepted}}"
+        class="auth-button"
+        open-type="getPhoneNumber"
+        bindgetphonenumber="handlePhoneNumber"
+        loading="{{loginLoading}}"
+        disabled="{{loginLoading}}"
+      >{{loginLoading ? '正在登录' : '手机号快捷登录'}}</button>
+      <button wx:else class="auth-button" bindtap="requestAgreement">手机号快捷登录</button>
+      <view wx:if="{{loginMessage}}" class="auth-message">{{loginMessage}}</view>
+      <view class="agreement-consent">
+        <checkbox-group class="agreement-check" bindchange="changeAgreement"><label class="agreement-check-target"><checkbox value="agree" checked="{{agreementAccepted}}" color="#286e4f" /></label></checkbox-group>
+        <view class="agreement-copy"><text>我已阅读并同意</text><text class="agreement-link" data-type="service" bindtap="openAgreement">《用户服务协议》</text><text>及</text><text class="agreement-link" data-type="privacy" bindtap="openAgreement">《隐私政策》</text></view>
+      </view>
+    </view>
+  </view>
 </view>

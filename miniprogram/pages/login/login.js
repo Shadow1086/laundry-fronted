@@ -1,34 +1,51 @@
 const authService = require('../../services/auth-service');
-const env = require('../../config/env');
 const errorUtil = require('../../utils/error');
+const { ROLE } = require('../../constants/role');
+const session = require('../../utils/session');
+
+// 登录成功后各角色的落地页；admin 走管理员入口，由用户自行选择进入哪个管理端。
+const ROLE_LANDING = {
+  [ROLE.ADMIN]: '/pages/admin-entry/index',
+  [ROLE.MANAGER]: '/pages/area-manager/index',
+  [ROLE.STAFF]: '/pages/laundry-staff/index',
+};
 
 Page({
   data: {
     phoneAuthorized: false,
+    agreementAccepted: false,
     loading: false,
     message: '',
     messageType: '',
-    demoMode: Boolean(env.demoMode),
   },
 
   onLoad() {
     if (authService.isAuthenticated()) {
+      this._redirectByRole();
+    }
+  },
+
+  _redirectByRole() {
+    const pendingLaunch = session.consumePendingLaunch();
+    if (pendingLaunch) {
+      wx.reLaunch({ url: require('../../utils/scan-context').resolvePendingLaunch(pendingLaunch, authService.getRole()) });
+      return;
+    }
+    const landing = ROLE_LANDING[authService.getRole()];
+    if (landing) {
+      wx.reLaunch({ url: landing });
+    } else {
       wx.switchTab({ url: '/pages/home/index' });
     }
   },
 
-  handleLoginTap() {
-    if (this.data.demoMode) this.demoLogin();
-  },
-
   handlePhoneNumber(e) {
-    if (this.data.demoMode) {
-      this.demoLogin();
-      return;
-    }
+    if (!this.data.agreementAccepted) return this.requestAgreement();
     const phoneCode = e.detail && e.detail.code;
     if (!phoneCode) {
-      this.setData({ phoneAuthorized: false, message: '手机号授权被取消，授权后才能完成登录', messageType: 'error' });
+      const detail = e.detail || {};
+      const reason = detail.errno ? `手机号授权失败（${detail.errno}）` : (detail.errMsg || '手机号授权被取消');
+      this.setData({ phoneAuthorized: false, message: reason, messageType: 'error' });
       return;
     }
     this.setData({ phoneAuthorized: true, message: '手机号已授权，正在安全登录…', messageType: 'info' });
@@ -39,23 +56,29 @@ Page({
   },
 
   async loginWithCodes(loginCode, phoneCode) {
-    if (!loginCode || !phoneCode || this.data.loading) return;
+    if (!this.data.agreementAccepted || !loginCode || !phoneCode || this.data.loading) return;
     this.setData({ loading: true, message: '正在登录…', messageType: 'info' });
     try {
       await authService.login({
         loginCode,
         phoneCode,
       });
-      wx.switchTab({ url: '/pages/home/index' });
+      this._redirectByRole();
     } catch (error) {
       this.setData({ loading: false, phoneAuthorized: false, message: errorUtil.getMessage(error, '登录失败，请稍后再试'), messageType: 'error' });
     }
   },
 
-  demoLogin() {
-    if (!this.data.demoMode || this.data.loading) return;
-    authService.saveDemoSession();
-    wx.showToast({ title: '演示登录成功', icon: 'success' });
-    setTimeout(() => wx.switchTab({ url: '/pages/home/index' }), 300);
+  changeAgreement(e) {
+    this.setData({ agreementAccepted: e.detail.value.includes('agree') });
+  },
+  openAgreement(e) {
+    wx.navigateTo({ url: `/pages/legal/index?type=${e.currentTarget.dataset.type}` });
+  },
+  requestAgreement() {
+    this.setData({ message: '请阅读并自行勾选同意用户服务协议和隐私政策', messageType: 'error' });
+  },
+  browseHome() {
+    wx.switchTab({ url: '/pages/home/index' });
   },
 });

@@ -4,6 +4,7 @@ page {
 }
 
 .home-shell {
+  position: relative;
   width: 100%;
   height: 100vh;
   min-height: 0;
@@ -11,10 +12,155 @@ page {
   font-family: 'PingFang SC', 'Hiragino Sans GB', sans-serif;
 }
 
+.auth-gate {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+.auth-gate-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 35, 26, .36);
+  backdrop-filter: blur(8rpx);
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 18rpx 42rpx calc(42rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 42rpx 42rpx 0 0;
+  box-shadow: 0 -18rpx 60rpx rgba(11, 52, 35, .16);
+  animation: auth-rise .32s ease-out both;
+}
+
+.auth-handle {
+  width: 72rpx;
+  height: 7rpx;
+  margin: 0 auto 34rpx;
+  background: #dbe6df;
+  border-radius: 99rpx;
+}
+
+.auth-dismiss {
+  position: absolute;
+  top: 28rpx;
+  right: 42rpx;
+  color: #8d9d94;
+  font-size: 22rpx;
+}
+
+.auth-kicker {
+  color: #25885d;
+  font-size: 20rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+}
+
+.auth-title {
+  margin-top: 15rpx;
+  color: #173126;
+  font-size: 40rpx;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.auth-copy {
+  margin-top: 14rpx;
+  color: #819188;
+  font-size: 24rpx;
+  line-height: 1.65;
+}
+
+.auth-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 92rpx;
+  margin: 32rpx 0 0;
+  color: #fff;
+  background: #17784f;
+  border-radius: 50rpx;
+  box-shadow: 0 14rpx 28rpx rgba(23, 120, 79, .2);
+  font-size: 28rpx;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.auth-button::after {
+  border: none;
+}
+
+.auth-button[disabled] {
+  color: rgba(255, 255, 255, .72);
+  background: #4b9374;
+}
+
+.auth-message {
+  margin-top: 18rpx;
+  padding: 16rpx 20rpx;
+  color: #a45f56;
+  background: #fff0ed;
+  border-radius: 16rpx;
+  font-size: 21rpx;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.auth-foot {
+  margin-top: 22rpx;
+  color: #a0aea7;
+  font-size: 19rpx;
+  text-align: center;
+}
+
+@keyframes auth-rise {
+  from {
+    opacity: 0;
+    transform: translateY(60rpx);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .home-scroll {
   height: 100%;
   box-sizing: border-box;
-  padding: 0 16rpx 20rpx;
+  /* 首页由微信 TabBar 承担底部安全区，避免在最后一张柜机卡片后生成大块空白。 */
+  padding: 0 16rpx 24rpx;
+}
+
+.home-legal-footer {
+  margin: 32rpx 24rpx 0;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #e1e8e3;
+}
+
+.home-legal-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+}
+
+.home-legal-link {
+  padding: 16rpx 0;
+  color: #75847c;
+}
+
+.home-legal-divider {
+  color: #c3cec7;
 }
 
 .hero {
@@ -112,8 +258,42 @@ page {
   padding: 30rpx 34rpx 28rpx;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   box-shadow: 0 12rpx 32rpx rgba(20, 72, 43, .07);
+}
+
+.welcome-card > view:first-child {
+  min-width: 0;
+}
+
+.welcome-orders {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 112rpx;
+  min-height: 92rpx;
+  margin-left: 20rpx;
+  border-radius: 18rpx;
+  background: #edf7f0;
+  color: #2c8055;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.welcome-orders image {
+  width: 38rpx;
+  height: 38rpx;
+  margin-bottom: 5rpx;
+}
+
+.welcome-orders-arrow {
+  display: none;
+}
+
+.welcome-orders-hover {
+  opacity: .72;
 }
 
 .eyebrow {
@@ -185,25 +365,27 @@ page {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 66rpx;
-  height: 66rpx;
-  margin-bottom: 16rpx;
-  border-radius: 18rpx;
+  width: 58rpx;
+  height: 58rpx;
+  margin-bottom: 14rpx;
+  border-radius: 16rpx;
   font-size: 28rpx;
   font-weight: 700;
 }
 
 .cabinet-action-deposit .cabinet-action-icon {
-  color: #a8e9bf;
-  background: rgba(255, 255, 255, .1);
-  border: 1rpx solid rgba(168, 233, 191, .3);
+  background: rgba(191, 233, 206, .08);
+  border: 1rpx solid rgba(191, 233, 206, .2);
 }
 
 .cabinet-action-pickup .cabinet-action-icon {
-  color: #a4d4f0;
-  background: rgba(164, 212, 240, .12);
-  border: 1rpx solid rgba(164, 212, 240, .25);
+  background: rgba(189, 220, 237, .08);
+  border: 1rpx solid rgba(189, 220, 237, .2);
 }
+
+.cabinet-action-icon image { width: 38rpx; height: 38rpx; }
+
+.location-tip .pin { flex: 0 0 auto; width: 25rpx; height: 25rpx; margin-right: 8rpx; }
 
 .cabinet-action-title {
   font-size: 26rpx;

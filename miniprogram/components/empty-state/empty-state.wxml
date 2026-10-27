@@ -1,1 +1,1 @@
-<view class="empty-state"><view class="empty-title">{{title}}</view><view class="empty-copy">{{description}}</view></view>
+<view class="empty-state"><view class="empty-mark"><image src="/assets/icons/package-open.svg" mode="aspectFit" /></view><view class="empty-title">{{title}}</view><view class="empty-copy">{{description}}</view></view>
