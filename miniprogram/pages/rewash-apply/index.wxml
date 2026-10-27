@@ -1,0 +1,70 @@
+<view class="rewash-page">
+  <view wx:if="{{loading}}" class="loading">正在读取订单信息…</view>
+  <block wx:else>
+    <view class="page-heading">
+      <view class="page-kicker">ORDER SERVICE</view>
+      <view class="heading-title">申请返洗</view>
+      <view class="order-number">订单 {{orderNo}}</view>
+    </view>
+
+    <view class="form-section location-section">
+      <view class="section-heading"><view class="section-title">返洗存放位置</view></view>
+      <picker class="cabinet-picker" mode="selector" range="{{cabinetNames}}" value="{{cabinetIndex}}" bindchange="onCabinetChange">
+        <view class="cabinet-picker-content">
+          <view class="cabinet-copy">
+            <view class="cabinet-label">当前柜机</view>
+            <view class="cabinet-name">{{cabinetName || '请选择柜机'}}</view>
+            <view class="cabinet-address">{{cabinetAddress || '柜机地址暂未配置'}}</view>
+          </view>
+          <text class="cabinet-arrow">⌄</text>
+        </view>
+      </picker>
+      <view class="subsection-heading">
+        <view class="subsection-title">选择格口规模</view>
+        <view class="subsection-copy">沿用原订单，可按需调整</view>
+      </view>
+      <view class="size-options">
+        <view class="size-option {{compartmentSize === 'SMALL' ? 'selected' : ''}}" data-size="SMALL" bindtap="selectSize">
+          <view class="size-option-head"><view class="size-name">小格口</view><view class="radio-dot"></view></view>
+          <view class="size-stock">空闲 {{smallAvailableCount}} 格</view>
+        </view>
+        <view class="size-option {{compartmentSize === 'LARGE' ? 'selected' : ''}}" data-size="LARGE" bindtap="selectSize">
+          <view class="size-option-head"><view class="size-name">大格口</view><view class="radio-dot"></view></view>
+          <view class="size-stock">空闲 {{largeAvailableCount}} 格</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-section reason-section">
+      <view class="section-heading"><view class="section-title">返洗原因</view></view>
+      <picker mode="selector" range="{{reasons}}" value="{{reasonIndex}}" bindchange="onReasonChange">
+        <view class="reason-picker"><text>{{reasons[reasonIndex]}}</text><text class="chevron">›</text></view>
+      </picker>
+      <textarea wx:if="{{reasons[reasonIndex] === '其他原因'}}" class="reason-input" placeholder="请说明需要返洗的问题" maxlength="200" value="{{customReason}}" bindinput="onCustomReasonInput" />
+    </view>
+
+    <view class="form-section photo-section">
+      <view class="photo-heading">
+        <view class="section-heading"><view class="section-title">问题照片</view></view>
+        <view class="photo-count">{{images.length}} / 3</view>
+      </view>
+      <view class="photo-hint">拍摄衣物问题部位，至少1张</view>
+      <view class="photo-grid">
+        <view wx:for="{{images}}" wx:key="*this" class="photo-item">
+          <image src="{{item}}" mode="aspectFill" data-path="{{item}}" bindtap="previewPhoto" />
+          <view class="photo-remove" data-index="{{index}}" catchtap="removePhoto">×</view>
+        </view>
+        <view wx:if="{{images.length < 3}}" class="photo-add" bindtap="takePhoto">
+          <image src="/assets/icons/camera.svg" mode="aspectFit" />
+          <text>拍摄照片</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+    <view class="bottom-actions">
+      <view class="back-button" bindtap="goBack">返回</view>
+      <view class="submit-button {{submitting || loading ? 'disabled' : ''}}" bindtap="submit">{{submitting ? '提交中…' : '提交申请'}}</view>
+    </view>
+  </block>
+</view>

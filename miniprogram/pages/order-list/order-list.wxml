@@ -1,5 +1,13 @@
 <view class="list-shell">
 
+  <view class="list-intro">
+    <view>
+      <view class="page-kicker">LAUNDRY JOURNEY</view>
+      <view class="page-title">我的订单</view>
+    </view>
+    <view class="order-count" wx:if="{{orders.length}}"><text>{{orders.length}}</text> 笔</view>
+  </view>
+
   <view class="filter-bar">
     <view
       wx:for="{{filters}}"
@@ -22,27 +30,40 @@
   <block wx:else>
     <view
       wx:for="{{filtered}}"
-      wx:key="id"
+      wx:key="orderId"
       class="order-card"
       hover-class="card-hover"
       bindtap="goDetail"
-      data-id="{{item.id}}"
+      data-order-id="{{item.orderId}}"
     >
       <view class="card-top">
-        <view class="card-id">{{item.id}}</view>
+        <view class="card-location-wrap">
+          <view class="card-location">{{item.locationLabel}}</view>
+          <view class="card-number">{{item.orderNo || '订单号待生成'}}</view>
+        </view>
         <view class="status-tag tone-{{item.statusConfig.tone}}">{{item.statusConfig.label}}</view>
       </view>
-      <view class="card-meta">
-        <text class="meta-date">{{item.createdAt}}</text>
-        <text class="meta-dot">·</text>
-        <text class="meta-items">{{item.itemsSummary}}</text>
+      <view class="card-time">最近更新于 {{item.updatedAtLabel}} · 创建于 {{item.createdAtLabel}}</view>
+      <view class="category-row">
+        <text class="category-label">衣物分类</text>
+        <text class="category-value">{{item.categorySummary}}</text>
+      </view>
+      <view class="pickup-code-row">
+        <text class="pickup-code-label">取货码</text>
+        <text class="pickup-code-value {{item.hasValidDeliveryCode ? '' : 'code-unavailable'}}">{{item.deliveryCodeLabel}}</text>
       </view>
       <view class="card-footer">
-        <view class="price-row">
-          <text class="price-label">预估</text>
-          <text class="price-val">¥{{item.estimate}}</text>
+        <view class="price-group">
+          <view class="price-row">
+            <text class="price-label">预估价格</text>
+            <text class="price-val estimate">¥{{item.estimateLabel}}</text>
+          </view>
+          <view wx:if="{{item.hasPayableAmount}}" class="price-row payable-row">
+            <text class="price-label">应付价格</text>
+            <text class="price-val">¥{{item.payableLabel}}</text>
+          </view>
         </view>
-        <view class="detail-link">查看详情 ›</view>
+        <view class="detail-link">查看详情 <text class="detail-arrow">→</text></view>
       </view>
     </view>
   </block>

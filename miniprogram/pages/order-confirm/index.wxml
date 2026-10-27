@@ -1,0 +1,46 @@
+<view class="shell">
+
+  <view class="section">
+    <view class="section-title">洗护衣物</view>
+    <view wx:for="{{items}}" wx:key="id" class="item-row">
+      <view class="item-info">
+        <view class="item-name">{{item.name}}</view>
+        <view class="item-sub">{{item.categoryName}} · ¥{{item.price}}/件</view>
+      </view>
+      <view class="item-count">×{{item.count}}</view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">柜口信息</view>
+    <view class="info-row">
+      <text class="info-label">柜口大小</text>
+      <view class="cabinet-tag {{cabinetType}}">{{cabinetType === 'small' ? '小格口' : '大格口'}}</view>
+    </view>
+    <view class="info-row">
+      <text class="info-label">投放网点</text>
+      <text class="info-value">{{storeName}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">衣物件数</text>
+      <text class="info-value">{{totalCount}} 件</text>
+    </view>
+  </view>
+
+  <view class="section price-section">
+    <view class="price-label">预估价格（非最终价）</view>
+    <view class="price-val"><text>¥</text>{{estimate}}</view>
+    <view wx:if="{{memberPriceApplied}}" class="member-price-notice">已享受会员价</view>
+    <view class="price-hint">最终费用以商家验收确认为准</view>
+  </view>
+
+  <view class="action-bar">
+    <view class="btn-cancel" hover-class="btn-hover" bindtap="cancel">取消</view>
+    <view
+      class="btn-confirm {{submitting ? 'btn-loading' : ''}}"
+      hover-class="{{submitting ? '' : 'btn-hover'}}"
+      bindtap="confirmOrder"
+    >{{submitting ? '提交中…' : '确认下单'}}</view>
+  </view>
+
+</view>

@@ -1,16 +1,25 @@
 <view class="order-shell {{showSelection ? 'selection-open' : ''}} {{confirmMode ? 'confirm-open' : ''}}">
+  <login-sheet visible="{{authVisible}}" binddismiss="dismissLogin" bindsuccess="handleLoginSuccess" />
   <view class="order-intro">
     <view class="location-header">
-      <view class="location-main">
-        <text class="location-name">{{selectedStoreInfo.name}}</text>
-        <text class="location-status">营业中</text>
-        <text class="location-type">智能柜</text>
+      <view class="location-title-row">
+        <text class="location-name" bindtap="openCabinetMap">{{selectedStoreInfo.name}}</text>
+        <view class="switch-store" hover-class="switch-store-hover" bindtap="chooseLocation">切换营业点</view>
       </view>
-      <view class="switch-store" hover-class="switch-store-hover" bindtap="chooseLocation">切换营业点</view>
+      <view class="location-tags">
+        <view class="location-status {{businessStatus === 0 ? 'location-status-closed' : ''}} {{businessStatus === null ? 'location-status-unknown' : ''}}">
+          {{businessStatus === 0 ? '已停业' : (businessStatus === 1 ? '营业中' : '状态未知')}}
+        </view>
+        <view class="location-type">智能柜</view>
+      </view>
     </view>
-    <view class="location-address">
-      <text class="location-pin">⌖</text>
+    <view class="location-address" bindtap="openCabinetMap">
+      <image class="location-pin" src="/assets/icons/map-pin.svg" mode="aspectFit" />
       <text class="location-address-text">{{selectedStoreInfo.address}}</text>
+      <text class="location-map-link">查看地图</text>
+    </view>
+    <view wx:if="{{locationMessage}}" class="location-message {{locationStatus === 'success' ? 'location-message-success' : ''}} {{locationStatus === 'failed' ? 'location-message-failed' : ''}}">
+      <text>{{locationMessage}}</text>
     </view>
   </view>
 
@@ -24,7 +33,6 @@
           bindtap="selectGroup"
           data-key="{{item.key}}"
         >
-          <view class="group-nav-icon">{{item.icon}}</view>
           <view class="group-nav-name">{{item.name}}</view>
           <view wx:if="{{item.selectedCount > 0}}" class="group-badge">{{item.selectedCount}}</view>
         </view>
@@ -35,43 +43,25 @@
 
         <view class="item-list">
           <view wx:for="{{activeGroup.items}}" wx:key="id" class="item-card">
-            <view class="item-name">{{item.name}}</view>
-
-            <block wx:if="{{item.images && item.images.length > 0}}">
-              <scroll-view class="item-gallery" scroll-x="true" enhanced="true" show-scrollbar="false">
-                <view class="gallery-track">
-                  <image
-                    wx:for="{{item.images}}"
-                    wx:for-item="imageUrl"
-                    wx:key="*this"
-                    class="item-image"
-                    src="{{imageUrl}}"
-                    mode="aspectFill"
-                    bindtap="previewItemImage"
-                    data-current="{{imageUrl}}"
-                    data-images="{{item.images}}"
-                  ></image>
-                </view>
-              </scroll-view>
-            </block>
-
-            <view class="item-detail">
-              <text class="detail-label">分类</text>
-              <text class="detail-value">{{item.serviceCategory}}</text>
+            <view class="item-card-header">
+              <view class="item-name">{{item.name}}</view>
+              <view class="item-detail">
+                <text class="detail-label">计件</text>
+                <text class="detail-value">按{{item.unitName}}计费</text>
+              </view>
             </view>
-            <view class="item-detail">
-              <text class="detail-label">范围</text>
-              <text class="detail-value">{{item.scope}}</text>
-            </view>
-            <view class="item-detail">
-              <text class="detail-label">洗护</text>
-              <text class="detail-value">{{item.description}}</text>
+            <view wx:if="{{(item.imageUrls && item.imageUrls.length) || item.comment}}" class="item-card-content {{item.hasThreeImages ? 'item-card-content-stacked' : ''}}">
+              <view wx:if="{{item.imageUrls && item.imageUrls.length}}" class="item-image-list">
+                <image wx:for="{{item.imageUrls}}" wx:key="*this" class="item-image" src="{{item}}" mode="aspectFill" />
+              </view>
+              <view wx:if="{{item.comment && !item.hasThreeImages}}" class="item-comment">{{item.comment}}</view>
+              <view wx:if="{{item.comment && item.hasThreeImages}}" class="item-comment item-comment-below">{{item.comment}}</view>
             </view>
 
             <view class="item-card-footer">
               <view class="price-block">
-                <view class="item-price"><text>¥</text>{{item.price}}</view>
-                <view wx:if="{{item.discount}}" class="member-price">会员 {{item.discount}} 折</view>
+                <view class="item-price"><text>¥</text>{{item.price}} / {{item.unitName}}</view>
+                <view wx:if="{{item.hasMemberPrice}}" class="member-price">会员价 ¥{{item.memberPrice}}</view>
               </view>
               <view class="stepper">
                 <view class="step-button {{item.count === 0 ? 'disabled' : ''}}" hover-class="step-button-hover" bindtap="decrease" data-id="{{item.id}}">−</view>
@@ -88,9 +78,10 @@
 
   <view wx:if="{{confirmMode}}" class="confirm-panel">
     <view class="confirm-head">
-      <view class="confirm-title">确认订单</view>
+      <view class="confirm-title">选择投放柜型</view>
       <view class="confirm-price"><text>¥</text>{{estimate}}</view>
     </view>
+    <view wx:if="{{memberPriceApplied}}" class="member-price-notice">已享受会员价</view>
     <view wx:if="{{inlineMessage}}" class="confirm-message">{{inlineMessage}}</view>
     <view class="confirm-summary">
       <view class="confirm-row">
@@ -108,31 +99,31 @@
         <view class="confirm-cabinet-hint">根据衣物数量选择</view>
       </view>
       <view class="cabinet-types">
-        <view class="cabinet-type {{cabinetType === 'small' ? 'selected' : ''}}" hover-class="cabinet-type-hover" bindtap="selectCabinetType" data-type="small">
+        <view class="cabinet-type {{cabinetType === 'small' ? 'selected' : ''}} {{!selectedStoreInfo.smallAvailableCount ? 'unavailable' : ''}}" hover-class="cabinet-type-hover" bindtap="selectCabinetType" data-type="small">
           <view class="cabinet-type-head">
             <view class="cabinet-size">小柜</view>
             <view class="radio-dot"></view>
           </view>
           <view class="cabinet-desc">少量日常衣物</view>
-          <view class="cabinet-stock">空闲 12 格</view>
+          <view class="cabinet-stock">{{selectedStoreInfo.smallAvailableCount ? '空闲 ' + selectedStoreInfo.smallAvailableCount + ' 格' : '当前无空闲格口'}}</view>
         </view>
-        <view class="cabinet-type {{cabinetType === 'large' ? 'selected' : ''}}" hover-class="cabinet-type-hover" bindtap="selectCabinetType" data-type="large">
+        <view class="cabinet-type {{cabinetType === 'large' ? 'selected' : ''}} {{!selectedStoreInfo.largeAvailableCount ? 'unavailable' : ''}}" hover-class="cabinet-type-hover" bindtap="selectCabinetType" data-type="large">
           <view class="cabinet-type-head">
             <view class="cabinet-size">大柜</view>
             <view class="radio-dot"></view>
           </view>
           <view class="cabinet-desc">大件或多件衣物</view>
-          <view class="cabinet-stock">空闲 6 格</view>
+          <view class="cabinet-stock">{{selectedStoreInfo.largeAvailableCount ? '空闲 ' + selectedStoreInfo.largeAvailableCount + ' 格' : '当前无空闲格口'}}</view>
         </view>
       </view>
       <view class="notice-line">
-        <view class="notice-icon">i</view>
+        <view class="notice-icon"><image src="/assets/icons/info.svg" mode="aspectFit" /></view>
         <view>提交后系统会按所选柜型匹配空闲格口</view>
       </view>
     </view>
     <view class="confirm-actions">
       <button class="secondary-button" bindtap="backToEdit"><text>返回修改</text></button>
-      <button class="primary-button" bindtap="submitOrder" loading="{{submitState === 'loading'}}"><text>{{submitState === 'success' ? '已提交' : '提交订单'}}</text></button>
+      <button class="primary-button" bindtap="submitOrder"><text>下一步</text></button>
     </view>
   </view>
 

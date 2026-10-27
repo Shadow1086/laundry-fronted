@@ -1,19 +1,25 @@
-page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragino Sans GB', sans-serif; }
+page { background: #f2f5f1; color: #17231f; font-family: 'PingFang SC', 'Hiragino Sans GB', sans-serif; }
 
-.list-shell { padding-bottom: 60rpx; }
+.list-shell { padding-bottom: calc(var(--tabbar-space) + var(--safe-bottom)); }
+
+.list-intro { display: flex; align-items: flex-end; justify-content: space-between; padding: 38rpx 28rpx 28rpx; background: #f2f5f1; }
+.page-kicker { color: #7d9989; font-size: 17rpx; font-weight: 700; letter-spacing: 3rpx; }
+.page-title { margin-top: 10rpx; color: #173126; font-size: 42rpx; font-weight: 700; letter-spacing: 1rpx; }
+.order-count { color: #8a9a91; font-size: 20rpx; }
+.order-count text { color: #2f805b; font-size: 30rpx; font-weight: 700; }
 
 .filter-bar {
   display: flex;
   padding: 0 24rpx;
-  background: #fff;
-  border-bottom: 1rpx solid #edf0ed;
+  background: rgba(255, 255, 255, .92);
+  border-bottom: 1rpx solid #e6ede8;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
 .filter-tab {
-  padding: 24rpx 20rpx 20rpx;
+  padding: 22rpx 20rpx 19rpx;
   font-size: 25rpx;
   color: #8b9892;
   position: relative;
@@ -63,10 +69,12 @@ page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragin
 .loading-text { color: #9aaa9f; font-size: 23rpx; }
 
 .order-card {
-  margin: 20rpx 24rpx 0;
-  padding: 28rpx 28rpx 20rpx;
+  margin: 18rpx 24rpx 0;
+  padding: 28rpx 26rpx 22rpx;
   background: #fff;
-  border-radius: 22rpx;
+  border: 1rpx solid #e5ece7;
+  border-radius: 20rpx;
+  box-shadow: 0 10rpx 24rpx rgba(29, 76, 49, .045);
   animation: rise 0.3s ease both;
 }
 
@@ -81,18 +89,26 @@ page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragin
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20rpx;
   margin-bottom: 14rpx;
 }
 
-.card-id {
+.card-location {
+  min-width: 0;
+  overflow: hidden;
   color: #1f3027;
   font-size: 25rpx;
   font-weight: 600;
-  letter-spacing: 0.5rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
+.card-location-wrap { min-width: 0; }
+.card-number { margin-top: 8rpx; color: #9aa9a1; font-size: 18rpx; letter-spacing: .5rpx; }
+
 .status-tag {
-  padding: 6rpx 18rpx;
+  flex-shrink: 0;
+  padding: 7rpx 16rpx;
   border-radius: 100rpx;
   font-size: 19rpx;
   font-weight: 600;
@@ -102,22 +118,65 @@ page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragin
 .tone-orange { background: #fdf0e0; color: #7a4a0a; }
 .tone-green  { background: #e8f5ee; color: #0f4d30; }
 .tone-gray   { background: #eaeded; color: #3a4e45; }
+.tone-purple { background: #f0ebf7; color: #66527d; }
+.tone-red    { background: #fcebea; color: #9d4d4a; }
 
-.card-meta {
-  display: flex;
-  align-items: center;
-  font-size: 22rpx;
-  color: #8b9892;
-  margin-bottom: 20rpx;
+.card-time {
+  margin-bottom: 14rpx;
+  color: #9aaa9f;
+  font-size: 21rpx;
 }
 
-.meta-dot { margin: 0 8rpx; }
+.category-row {
+  display: flex;
+  align-items: center;
+  padding: 14rpx 16rpx;
+  margin-bottom: 18rpx;
+  background: #f6f9f6;
+  border: 1rpx solid #edf2ee;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+}
 
-.meta-items {
+.category-label {
+  flex-shrink: 0;
+  margin-right: 16rpx;
+  color: #8b9892;
+}
+
+.category-value {
   flex: 1;
+  color: #40584b;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.pickup-code-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -6rpx 0 18rpx;
+  padding: 12rpx 16rpx;
+  color: #40584b;
+  background: #f7faf8;
+  border: 1rpx solid #edf2ee;
+  border-radius: 12rpx;
+}
+
+.pickup-code-label { color: #8b9892; font-size: 22rpx; }
+
+.pickup-code-value {
+  color: #17623f;
+  font-size: 25rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+}
+
+.pickup-code-value.code-unavailable {
+  color: #9aaa9f;
+  font-weight: 500;
+  letter-spacing: 2rpx;
 }
 
 .card-footer {
@@ -134,6 +193,10 @@ page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragin
   gap: 8rpx;
 }
 
+.price-group { display: flex; flex-direction: column; gap: 8rpx; }
+
+.payable-row .price-label { color: #566b60; }
+
 .price-label { font-size: 20rpx; color: #8b9892; }
 
 .price-val {
@@ -142,8 +205,12 @@ page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragin
   color: #2c9758;
 }
 
+.price-val.estimate { color: #7b9185; font-size: 24rpx; font-weight: 500; }
+
 .detail-link {
   font-size: 22rpx;
   color: #358761;
-  font-weight: 500;
+  font-weight: 600;
 }
+
+.detail-arrow { display: inline-block; margin-left: 6rpx; font-size: 28rpx; vertical-align: -1rpx; }

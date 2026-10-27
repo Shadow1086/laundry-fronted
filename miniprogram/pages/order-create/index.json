@@ -1,1 +1,6 @@
-{ "navigationBarTitleText": "下单" }
+{
+    "navigationBarTitleText": "下单",
+    "usingComponents": {
+        "login-sheet": "/components/login-sheet/index"
+    }
+}

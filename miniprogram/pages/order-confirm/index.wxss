@@ -1,0 +1,133 @@
+page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragino Sans GB', sans-serif; }
+
+.shell { padding: 24rpx 24rpx calc(220rpx + var(--safe-bottom)); }
+
+.section {
+  margin-bottom: 20rpx;
+  padding: 0 28rpx;
+  background: #fff;
+  border-radius: 22rpx;
+  overflow: hidden;
+}
+
+.section-title {
+  padding: 24rpx 0 16rpx;
+  color: #4a6457;
+  font-size: 21rpx;
+  font-weight: 600;
+  letter-spacing: 1rpx;
+  border-bottom: 1rpx solid #edf0ed;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f3f0;
+}
+
+.item-row:last-child { border-bottom: 0; }
+
+.item-name {
+  color: #1f3027;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.item-sub {
+  margin-top: 5rpx;
+  color: #8b9892;
+  font-size: 19rpx;
+}
+
+.item-count {
+  color: #8b9892;
+  font-size: 22rpx;
+  flex-shrink: 0;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 72rpx;
+  border-bottom: 1rpx solid #f0f3f0;
+  font-size: 24rpx;
+}
+
+.info-row:last-child { border-bottom: 0; }
+
+.info-label { color: #8b9892; flex-shrink: 0; }
+
+.info-value { color: #1f3027; text-align: right; }
+
+.cabinet-tag {
+  padding: 6rpx 20rpx;
+  border-radius: 100rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.cabinet-tag.small { background: #e8f5ee; color: #0f4d30; }
+.cabinet-tag.large { background: #e8eef8; color: #1a3a78; }
+
+.price-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36rpx 28rpx 32rpx;
+}
+
+.price-label { color: #a05a10; font-size: 30rpx; font-weight: 700; }
+
+.price-val {
+  color: #2c9758;
+  font-size: 64rpx;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 8rpx 0 4rpx;
+}
+
+.price-val text { font-size: 28rpx; font-weight: 400; margin-right: 4rpx; }
+
+.price-hint { color: #68766f; font-size: 23rpx; margin-top: 8rpx; }
+
+.action-bar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  gap: 16rpx;
+  padding: 20rpx 24rpx calc(48rpx + var(--safe-bottom));
+  background: #fff;
+  border-top: 1rpx solid #e8edea;
+}
+
+.btn-cancel, .btn-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: 22rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.btn-cancel {
+  flex: 1;
+  color: #566b60;
+  background: #eef2ef;
+}
+
+.btn-confirm {
+  flex: 2;
+  color: #fff;
+  background: #286e4f;
+}
+
+.btn-loading { background: #7aaa8f; }
+
+.btn-hover { opacity: 0.72; }
+.member-price-notice { margin-top: 12rpx; color: #2f8a5a; font-size: 22rpx; }
