@@ -1,0 +1,17 @@
+<view class="map-page">
+  <map id="cabinet-map" class="cabinet-map" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" markers="{{markers}}" show-location="true" enable-zoom="true" enable-scroll="true" bindmarkertap="onMarkerTap"></map>
+  <view class="map-topbar"><view class="map-title">附近柜机与处理点</view><view class="map-subtitle">{{stores.length}} 个柜机 · {{processingSites.length}} 个处理点</view><view wx:if="{{currentAddress}}" class="map-location">当前位置 · {{currentAddress}}</view></view>
+  <view class="map-actions"><view class="map-action" bindtap="locateMe"><image src="/assets/icons/locate-fixed.svg" mode="aspectFit" />定位我</view><view class="map-action" bindtap="retry"><image src="/assets/icons/refresh-cw.svg" mode="aspectFit" />刷新</view></view>
+  <view wx:if="{{message}}" class="map-message">{{message}}</view>
+  <view wx:if="{{loading}}" class="map-loading">正在加载柜机位置…</view>
+  <view wx:if="{{selectedStore}}" class="store-sheet">
+    <view class="sheet-head"><view class="sheet-title">{{selectedStore.name}}</view><view class="sheet-close" bindtap="closeStore">×</view></view>
+    <view class="sheet-address">{{selectedStore.address || '地址暂未配置'}}</view>
+    <view class="sheet-meta"><text>{{selectedStore.distance || '距离未知'}}</text><text>小柜 {{selectedStore.smallAvailableCount || 0}} 格</text><text>大柜 {{selectedStore.largeAvailableCount || 0}} 格</text></view>
+  </view>
+  <view wx:if="{{selectedSite}}" class="store-sheet">
+    <view class="sheet-head"><view class="sheet-title">{{selectedSite.siteName}}</view><view class="sheet-close" bindtap="closeStore">×</view></view>
+    <view class="sheet-address">{{selectedSite.address || '地址暂未配置'}}</view>
+    <view class="sheet-meta"><text>处理点</text><text>{{selectedSite.siteStatus || '正常运营'}}</text></view>
+  </view>
+</view>

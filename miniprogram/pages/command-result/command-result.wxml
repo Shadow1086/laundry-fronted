@@ -1,1 +1,79 @@
-<view class="placeholder-page"><view class="placeholder-kicker">COMMAND RESULT</view><view class="placeholder-title">操作结果</view><view class="placeholder-copy">设备指令结果页面已预留，后续展示开柜、关柜等操作状态。</view></view>
+<view class="shell">
+
+  <!-- 开柜中 -->
+  <block wx:if="{{stage === 'opening'}}">
+    <view class="status-hero opening">
+      <view class="spinner"></view>
+      <view class="hero-title">格口开启中</view>
+      <view class="hero-hint">请稍候，正在为您开启{{cabinetType === 'small' ? '小格口' : '大格口'}}…</view>
+    </view>
+  </block>
+
+  <!-- 确认关闭柜门 -->
+  <block wx:elif="{{stage === 'confirm-close'}}">
+    <view class="status-hero success">
+      <view class="hero-icon"><image src="/assets/icons/circle-check.svg" mode="aspectFit" /></view>
+      <view class="hero-title">{{doorOpenedConfirmed ? '格口已开启' : '请确认柜门已打开'}}</view>
+      <view class="hero-hint">柜门打开后，请{{mode === 'pickup' ? '取出衣物' : '将衣物放入'}}{{cabinetType === 'small' ? '小格口' : '大格口'}}并关闭柜门</view>
+      <button wx:if="{{!doorOpenedConfirmed}}" class="failure-link" bindtap="doorNotOpened">柜门未打开</button>
+    </view>
+
+    <view class="card">
+      <view class="card-title">柜门是否成功关闭？</view>
+      <view class="card-desc">请确认衣物已{{mode === 'pickup' ? '取出' : '放入'}}并听到“咔哒”关门声后操作</view>
+      <view class="card-actions">
+        <view class="btn-secondary" hover-class="btn-hover" bindtap="doorNotClosed">未关闭</view>
+        <view class="btn-primary {{confirming ? 'btn-loading' : ''}}" hover-class="{{confirming ? '' : 'btn-hover'}}" bindtap="confirmClose">{{confirming ? '确认中…' : '已关闭'}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{mode === 'deposit'}}" class="exception-section">
+      <view class="exception-title">遇到问题？</view>
+      <view class="exception-item" hover-class="exception-hover" bindtap="goContactService">
+        <view class="exception-name">联系客服</view>
+        <view class="exception-arrow">›</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 开柜失败 -->
+  <block wx:elif="{{stage === 'error-open' || stage === 'idle'}}">
+    <view class="status-hero error failure-status">
+      <view class="hero-icon"><image src="/assets/icons/circle-alert-amber.svg" mode="aspectFit" /></view>
+      <view class="hero-title">{{errorTitle}}</view>
+      <view class="failure-context" wx:if="{{orderId}}">{{mode === 'pickup' ? '取衣开柜' : '存衣开柜'}} · {{cabinetType === 'small' ? '小格口' : '大格口'}}</view>
+      <view class="hero-hint">{{errorMsg}}</view>
+    </view>
+
+    <view class="failure-actions">
+      <view class="failure-note">{{unconfirmed ? '先检查实际柜门状态，柜门已打开时无需再次开柜。' : (canRetry ? '请确认柜机和网络状态正常后重试。' : '请查看订单当前状态，或联系客服协助处理。')}}</view>
+      <button wx:if="{{unconfirmed && cabinetOperationId}}" class="failure-button primary" disabled="{{confirmingOpened || retrying}}" loading="{{confirmingOpened}}" bindtap="confirmOpened">柜门已打开，继续</button>
+      <button wx:if="{{canRetry && orderId}}" class="failure-button {{unconfirmed && cabinetOperationId ? 'secondary' : 'primary'}}" disabled="{{retrying || confirmingOpened}}" loading="{{retrying}}" bindtap="retryOpen">
+        <image wx:if="{{!retrying}}" class="action-icon" src="/assets/icons/refresh-cw.svg" mode="aspectFit" />
+        <text>{{retrying ? '正在重试' : (unconfirmed ? '柜门未打开，重试' : '重新开柜')}}</text>
+      </button>
+      <button class="failure-button secondary" disabled="{{contacting || confirmingOpened || retrying}}" loading="{{contacting}}" bindtap="goContactService">
+        <image wx:if="{{!contacting}}" class="action-icon" src="/assets/icons/headset.svg" mode="aspectFit" />
+        <text>联系客服</text>
+      </button>
+      <view class="failure-footer">
+        <button class="failure-link" disabled="{{confirmingOpened || retrying}}" bindtap="goOrderDetail">{{orderId ? '查看订单' : '返回订单列表'}}</button>
+      </view>
+    </view>
+  </block>
+
+  <!-- 完成 -->
+  <block wx:elif="{{stage === 'done'}}">
+    <view class="status-hero done">
+      <view class="hero-icon"><image src="/assets/icons/circle-check.svg" mode="aspectFit" /></view>
+      <view class="hero-title">{{mode === 'pickup' ? '取衣完成' : '投放成功'}}</view>
+      <view class="hero-hint">{{mode === 'pickup' ? '请检查衣物并妥善保管' : '衣物已收到，洗护进度可在订单页查看'}}</view>
+    </view>
+
+    <view class="done-actions">
+      <view class="btn-outline" hover-class="btn-hover" bindtap="goOrders">查看订单</view>
+      <view class="btn-primary" hover-class="btn-hover" bindtap="goHome">返回首页</view>
+    </view>
+  </block>
+
+</view>

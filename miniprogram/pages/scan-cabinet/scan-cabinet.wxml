@@ -1,1 +1,87 @@
-<view class="placeholder-page"><view class="placeholder-kicker">SCAN CABINET</view><view class="placeholder-title">扫码开柜</view><view class="placeholder-copy">扫码页面已预留，后续接入柜机识别与开柜指令。</view></view>
+<view class="pickup-page">
+  <block wx:if="{{stage === 'ready'}}">
+    <view class="page-kicker">CABINET PICKUP</view>
+    <view class="page-title">取衣 / 存衣开柜</view>
+    <view class="page-copy">选择待取订单开门；审核通过的反洗订单可选择柜机重新存衣。</view>
+
+    <view class="section-heading">
+      <view class="section-title">我的待处理订单</view>
+      <view class="section-link" bindtap="goOrders">全部订单 ›</view>
+    </view>
+
+    <picker class="cabinet-picker" mode="selector" range="{{cabinetOptions}}" range-key="displayName"
+            value="{{selectedCabinetIndex}}" bindchange="selectCabinet">
+      <view class="cabinet-picker-content">
+        <view>
+          <view class="cabinet-picker-label">当前柜机</view>
+          <view class="cabinet-picker-value">{{cabinetOptions[selectedCabinetIndex].displayName}}</view>
+        </view>
+        <text class="cabinet-picker-arrow">⌄</text>
+      </view>
+    </picker>
+
+    <view wx:if="{{ordersLoading}}" class="loading-panel">
+      <view class="loading-dot"></view>
+      <view>正在加载待取订单</view>
+    </view>
+    <view wx:elif="{{!pickupOrders.length}}" class="empty-panel">
+      <view class="empty-title">暂无待处理衣物</view>
+      <view class="empty-copy">可取衣或反洗存衣的订单会显示在这里</view>
+    </view>
+    <view wx:else class="order-list">
+      <view wx:for="{{pickupOrders}}" wx:key="orderId" class="pickup-order">
+        <view class="order-main">
+          <view class="order-status {{item.canOpen ? 'status-ready' : 'status-blocked'}}">{{item.stateLabel}}</view>
+          <view class="order-location">{{item.cabinetName}}</view>
+          <view class="order-meta">
+            <text>订单 {{item.orderNo || '待生成'}}</text>
+            <text wx:if="{{item.compartmentNo}}">格口 {{item.compartmentNo}}</text>
+          </view>
+          <view wx:if="{{item.categoryDetail}}" class="order-category">{{item.categoryDetail}}</view>
+        </view>
+        <view
+          class="order-open {{submittingKey ? 'is-disabled' : ''}}"
+          data-order-id="{{item.orderId}}"
+          bindtap="openOwnOrder"
+        >{{submittingKey === 'rewash-' + item.orderId ? '开门中…' : (submittingKey === 'order-' + item.orderId ? '开门中…' : (submittingKey === 'pay-' + item.orderId ? '支付中…' : (item.isRewashDeposit ? '开门存衣' : (item.paid ? '开门' : '去付款'))))}}</view>
+      </view>
+    </view>
+
+    <view class="pickup-divider"><text></text><view>代取他人衣物</view><text></text></view>
+
+    <view class="code-panel">
+      <view class="code-title">输入4位取货码</view>
+      <view class="code-copy">取货码由订单本人在订单详情中提供</view>
+      <input
+        class="code-input"
+        type="text"
+        maxlength="4"
+        value="{{deliveryCode}}"
+        placeholder="请输入4位英数字"
+        placeholder-class="code-placeholder"
+        bindinput="inputDeliveryCode"
+        bindconfirm="openWithDeliveryCode"
+        disabled="{{submittingKey}}"
+      />
+      <view
+        class="primary-button {{deliveryCode.length !== 4 || submittingKey ? 'is-disabled' : ''}}"
+        bindtap="openWithDeliveryCode"
+      >{{submittingKey === 'delivery-code' ? '正在开门…' : '确认取衣'}}</view>
+    </view>
+
+    <view class="safe-tip"><image src="/assets/icons/info.svg" mode="aspectFit" /><view>柜门弹开时请保持距离，取出衣物后确认柜门已经关好。</view></view>
+  </block>
+
+  <block wx:else>
+    <view class="success-panel">
+      <view class="success-icon"><image src="/assets/icons/circle-check.svg" mode="aspectFit" /></view>
+      <view class="success-title">柜门已开启</view>
+    <view class="success-copy">{{openedMode === 'deposit' ? '请将衣物放入柜中并关好柜门' : '请取出衣物并关好柜门'}}</view>
+    <view class="success-note">{{openedMode === 'deposit' ? '存衣完成后，订单会进入待取件状态。' : '取衣完成后，请检查衣物并妥善保管。'}}</view>
+    </view>
+    <view class="done-actions">
+      <view class="outline-button" bindtap="goOrders">查看订单</view>
+      <view class="primary-button" bindtap="goHome">返回首页</view>
+    </view>
+  </block>
+</view>
