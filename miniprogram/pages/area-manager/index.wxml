@@ -1,0 +1,210 @@
+<view class="shell">
+  <!-- idle: 模式Tab + 扫码区 + 订单列表 -->
+  <block wx:if="{{stage === 'idle'}}">
+    <view class="printer-status-card">
+      <view class="printer-status-dot {{printerStatus}}"></view>
+      <view class="printer-status-copy"><view class="printer-status-title">{{printerStatusText}}</view><view wx:if="{{printerDeviceName}}" class="printer-status-name">{{printerDeviceName}}</view><view wx:if="{{printerError}}" class="printer-status-error">{{printerError}}</view></view>
+      <view class="printer-reconnect" catchtap="selectPrinter">选择打印机</view>
+      <view wx:if="{{printerStatus === 'disconnected'}}" class="printer-reconnect" catchtap="reconnectPrinter">重新搜索</view>
+    </view>
+    <view class="mode-tabs">
+      <view class="tab-item {{mode === 'pickup' ? 'active' : ''}}" bindtap="setMode" data-mode="pickup">取衣送洗</view>
+      <view class="tab-item {{mode === 'delivery' ? 'active' : ''}}" bindtap="setMode" data-mode="delivery">洗后返柜</view>
+    </view>
+
+    <view wx:if="{{mode !== 'history'}}" class="scan-area" hover-class="scan-hover" bindtap="scanBarcode">
+      <view class="scan-icon"><image src="/assets/icons/scan-line.svg" mode="aspectFit" /></view>
+      <view class="scan-label">{{mode === 'pickup' ? '扫码取衣' : '扫码返柜'}}</view>
+    </view>
+
+    <view wx:if="{{cabinetId}}" class="card scan-context-card">
+      <view class="card-title">当前柜机</view>
+      <view class="card-desc">{{cabinetName || cabinetId}}（已通过柜机二维码识别）</view>
+    </view>
+
+    <picker wx:if="{{mode !== 'history'}}" class="cabinet-filter" mode="selector" range="{{cabinetOptions}}" range-key="displayName"
+            value="{{selectedCabinetIndex}}" bindchange="selectOrderCabinet">
+      <view class="cabinet-filter-content">
+        <view class="cabinet-filter-copy">
+          <view class="cabinet-filter-label">作业柜机</view>
+          <view class="cabinet-filter-value">{{selectedCabinetName}}</view>
+        </view>
+        <view class="cabinet-filter-side">
+          <text class="cabinet-filter-count">{{selectedCabinetOrderCount}} 单待处理</text>
+          <text class="cabinet-filter-arrow">⌄</text>
+        </view>
+      </view>
+    </picker>
+
+    <view class="list-loading" wx:if="{{loading}}">正在查询待处理订单…</view>
+    <view class="list-section" wx:elif="{{orderList.length > 0}}">
+      <view class="list-title">{{mode === 'history' ? '历史订单' : (mode === 'pickup' ? '待取衣订单' : '待返柜订单')}} · {{orderList.length}}</view>
+      <view class="order-list-item" wx:for="{{orderList}}" wx:key="id" bindtap="tapListOrder" data-id="{{item.id}}">
+        <view class="list-item-main">
+          <view class="list-order-id">{{item.orderNo || '订单号待生成'}}</view>
+          <view class="list-order-meta">{{item.customerName}}<text wx:if="{{item.customerPhone}}"> · {{item.customerPhone}}</text></view>
+          <view class="list-order-meta">{{item.cabinetLabel || item.storeName}}</view>
+          <view wx:if="{{item.items.length}}" class="list-order-items">{{item.items[0].name}}<text wx:if="{{item.items.length > 1}}"> 等 {{item.items.length}} 类</text></view>
+        </view>
+        <view class="list-item-actions" catchtap="preventBubble">
+          <view wx:if="{{item.customerPhone}}" class="list-btn-call" catchtap="callPhone" data-phone="{{item.customerPhone}}"><image src="/assets/icons/phone-call.svg" mode="aspectFit" /></view>
+          <view wx:if="{{mode !== 'delivery'}}"
+                class="list-btn-print {{printingOrderId === item.id ? 'is-loading' : ''}}"
+                catchtap="printOrder" data-id="{{item.id}}">
+            {{printingOrderId === item.id ? '提交中' : '打印'}}
+          </view>
+          <view wx:if="{{mode !== 'history'}}" class="list-btn-open" catchtap="quickOpenDoor" data-id="{{item.id}}">{{mode === 'pickup' ? '取衣' : '返柜'}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="list-empty" wx:else>
+      <view class="empty-text">暂无{{mode === 'history' ? '历史' : (mode === 'pickup' ? '待取衣' : '待返柜')}}订单</view>
+    </view>
+  </block>
+
+  <!-- order-found: 订单信息 + 格口选择 -->
+  <block wx:elif="{{stage === 'order-found'}}">
+    <view class="mode-badge {{mode === 'pickup' ? 'badge-pickup' : 'badge-delivery'}}">
+      {{mode === 'pickup' ? '取衣送洗' : '洗后返柜'}}
+    </view>
+    <view class="card order-detail-card">
+      <view class="order-id">{{order.orderNo || '订单号待生成'}}</view>
+      <view class="order-store">{{order.storeName}}</view>
+      <view class="order-customer">顾客：{{order.customerName}}<text wx:if="{{order.customerPhone}}"> · </text><text wx:if="{{order.customerPhone}}" class="phone-link" catchtap="callPhone" data-phone="{{order.customerPhone}}">{{order.customerPhone}}</text></view>
+      <view wx:if="{{order.cabinetLabel || order.compartmentLabel}}" class="order-customer">返柜柜机/格口：{{order.cabinetLabel}}<text wx:if="{{order.compartmentLabel}}"> / {{order.compartmentLabel}}</text></view>
+      <view wx:if="{{order.userId}}" class="detail-row"><text>用户编号</text><text>{{order.userId}}</text></view>
+      <view wx:if="{{order.serviceSiteId}}" class="detail-row"><text>服务点编号</text><text>{{order.serviceSiteId}}</text></view>
+      <view class="items-list">
+        <view class="item-row" wx:for="{{order.items}}" wx:key="name">
+          <text class="item-name">{{item.name}}</text>
+          <text class="item-count">×{{item.count}}</text>
+        </view>
+      </view>
+      <view class="divider"></view>
+      <view class="status-row">
+        <text class="status-text">{{order.statusLabel}}</text>
+      </view>
+      <view wx:if="{{order.estimatedPayableAmount || order.finalPayableAmount}}" class="detail-row"><text>应付金额</text><text class="amount">¥{{order.finalPayableAmount || order.estimatedPayableAmount}}</text></view>
+      <view wx:if="{{order.createdAt}}" class="detail-row"><text>下单时间</text><text>{{order.createdAt}}</text></view>
+    </view>
+    <view wx:if="{{mode === 'delivery'}}" class="card">
+      <view class="card-title">选择格口规格</view>
+      <view class="radio-group">
+        <view class="radio-item {{selectedCabinetType === 'small' ? 'selected' : ''}}"
+              bindtap="selectCabinet" data-type="small">
+          <view class="radio-dot"></view>
+          <text class="radio-text">小格口</text>
+          <text class="radio-hint" wx:if="{{order.cabinetType === 'small'}}">（顾客原选）</text>
+        </view>
+        <view class="radio-item {{selectedCabinetType === 'large' ? 'selected' : ''}}"
+              bindtap="selectCabinet" data-type="large">
+          <view class="radio-dot"></view>
+          <text class="radio-text">大格口</text>
+          <text class="radio-hint" wx:if="{{order.cabinetType === 'large'}}">（顾客原选）</text>
+        </view>
+      </view>
+    </view>
+    <view class="action-row">
+      <view class="btn-secondary" hover-class="btn-hover" bindtap="resetScan">返回</view>
+      <view class="btn-primary" hover-class="btn-hover" bindtap="openDoor">{{mode === 'pickup' ? '开柜取衣' : '开柜返还'}}</view>
+    </view>
+  </block>
+
+  <!-- opening -->
+  <block wx:elif="{{stage === 'opening'}}">
+    <view class="status-hero opening">
+      <view class="spinner"></view>
+      <view class="hero-title">格口开启中</view>
+      <view class="hero-hint">正在为您开启{{selectedCabinetType === 'small' ? '小格口' : '大格口'}}…</view>
+    </view>
+  </block>
+
+  <!-- confirm-close -->
+  <block wx:elif="{{stage === 'confirm-close'}}">
+    <view class="status-hero success">
+      <view class="hero-icon"><image src="/assets/icons/circle-check.svg" mode="aspectFit" /></view>
+      <view class="hero-title">格口已开启</view>
+      <view class="hero-hint">请{{mode === 'pickup' ? '取出衣物' : '放入衣物'}}后关闭柜门</view>
+    </view>
+    <view class="card">
+      <view class="card-title">柜门是否成功关闭？</view>
+      <view class="card-desc">请确认操作完成并听到"咔哒"关门声后操作</view>
+      <view class="card-actions">
+        <view class="btn-secondary" hover-class="btn-hover" bindtap="doorNotClosed">未关闭</view>
+        <view class="btn-primary {{submitting ? 'btn-loading' : ''}}" hover-class="{{submitting ? '' : 'btn-hover'}}" bindtap="confirmClose">{{submitting ? '确认中…' : '已关闭'}}</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- error-open -->
+  <block wx:elif="{{stage === 'error-open'}}">
+    <view class="status-hero error error-hero">
+      <view class="error-symbol">
+        <view class="hero-icon"><image src="/assets/icons/circle-alert-amber.svg" mode="aspectFit" /></view>
+        <view class="error-pulse"></view>
+      </view>
+      <view class="hero-title">格口未能打开</view>
+      <view class="error-message">{{errorMsg || '设备暂时未响应，请选择下方处理方式'}}</view>
+    </view>
+
+    <view class="card error-detail-card">
+      <view class="error-detail-head">
+        <view class="card-title">本次开柜操作</view>
+        <view class="mode-badge {{mode === 'pickup' ? 'badge-pickup' : 'badge-delivery'}}">
+          {{mode === 'pickup' ? '取衣送洗' : '洗后返柜'}}
+        </view>
+      </view>
+      <view class="error-detail-row" wx:if="{{order}}">
+        <text class="error-detail-label">订单号</text>
+        <text class="error-detail-value">{{order.orderNo || '待生成'}}</text>
+      </view>
+      <view class="error-detail-row" wx:if="{{cabinetName || cabinetId || order.cabinetLabel}}">
+        <text class="error-detail-label">目标柜机</text>
+        <text class="error-detail-value">{{cabinetName || order.cabinetLabel || cabinetId}}</text>
+      </view>
+      <view class="error-detail-row">
+        <text class="error-detail-label">格口规格</text>
+        <text class="error-detail-value">{{selectedCabinetType === 'small' ? '小格口' : '大格口'}}</text>
+      </view>
+    </view>
+
+    <view class="error-tip">
+      <view class="error-tip-mark"><image src="/assets/icons/info.svg" mode="aspectFit" /></view>
+      <view class="error-tip-text">请先确认柜门未被衣物卡住。若再次开门仍失败，可上报异常后返回列表处理其他订单。</view>
+    </view>
+
+    <view class="error-actions">
+      <view class="error-action-title">请选择处理方式</view>
+      <view class="card-actions stacked">
+        <view class="btn-primary {{retrying ? 'btn-loading' : ''}}"
+              hover-class="{{retrying ? '' : 'btn-hover'}}" bindtap="retryOpen">
+          {{retrying ? '尝试中…' : '再次开门'}}
+        </view>
+        <view class="error-secondary-actions">
+          <view class="btn-report" hover-class="btn-hover" bindtap="reportError">上报异常</view>
+          <view class="btn-back-list" hover-class="btn-hover" bindtap="resetScan">返回列表</view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- done -->
+  <block wx:elif="{{stage === 'done'}}">
+    <view class="status-hero done">
+      <view class="hero-icon"><image src="/assets/icons/circle-check.svg" mode="aspectFit" /></view>
+      <view class="hero-title">{{mode === 'pickup' ? '取衣完成' : '返柜完成'}}</view>
+      <view class="hero-hint">{{mode === 'pickup' ? '衣物可送往洗衣店' : '洗净衣物已放回柜机'}}</view>
+    </view>
+    <view class="done-actions">
+      <view class="btn-primary" hover-class="btn-hover" bindtap="goHome">返回工作台</view>
+      <view class="btn-outline" hover-class="btn-hover" bindtap="scanAgain">继续操作</view>
+    </view>
+  </block>
+
+  <view style="position: fixed; top: 9999px;">
+  <canvas canvas-id="Canvas" id="Canvas" width="{{templateWidth}}" height="{{templateHeight}}" style="width:{{templateWidth}}px;height:{{templateHeight}}px"></canvas>
+  <canvas type="2d" canvas-id="barCodels" id="barCodels" width="{{barCodeWidth * pixelRatio}}" height="{{barCodeHeight * pixelRatio}}" style="width:{{barCodeWidth || 214}}px;height:{{barCodeHeight || 72}}px"></canvas>
+  <canvas type="2d" canvas-id="qrCode" id="qrCode" width="{{qrCodeWidth * pixelRatio}}" height="{{qrCodeHeight * pixelRatio}}" style="width:{{qrCodeWidth || 20}}px;height:{{qrCodeHeight || 20}}px"></canvas>
+  </view>
+</view>

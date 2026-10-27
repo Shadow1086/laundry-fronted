@@ -1,1 +1,23 @@
-page { background: #f3f6f4; }.admin-page { min-height: 100vh; padding: 170rpx 46rpx; box-sizing: border-box; background: radial-gradient(circle at 100% 0,#e2f1e7 0,#f3f6f4 40%); }.admin-mark { width: 100rpx; height: 100rpx; display: flex; align-items: center; justify-content: center; border-radius: 30rpx; color: #3f7a5e; background: #e4f1e8; font-size: 47rpx; }.admin-kicker { color: #719887; font-size: 19rpx; letter-spacing: 3rpx; margin-top: 47rpx; }.admin-title { color: #173126; font-size: 48rpx; font-weight: 700; margin-top: 16rpx; }.admin-copy { color: #81948a; font-size: 24rpx; line-height: 1.7; margin-top: 20rpx; }.admin-status { display: flex; gap: 16rpx; align-items: center; margin-top: 56rpx; padding: 22rpx; border-radius: 22rpx; background: #fff; box-shadow: 0 12rpx 30rpx rgba(20,72,43,.06); }.status-dot { width: 18rpx; height: 18rpx; border-radius: 50%; background: #4c9d70; box-shadow: 0 0 0 8rpx #e1f1e6; }.status-title { color: #35664c; font-size: 23rpx; font-weight: 700; }.status-copy { color: #8a9b92; font-size: 19rpx; margin-top: 7rpx; }
+page { background: #f3f6f4; }
+.admin-page { min-height: 100vh; padding: 170rpx 46rpx; box-sizing: border-box; background: radial-gradient(circle at 100% 0,#e2f1e7 0,#f3f6f4 40%); }
+.admin-mark { width: 100rpx; height: 100rpx; display: flex; align-items: center; justify-content: center; border-radius: 30rpx; color: #3f7a5e; background: #e4f1e8; font-size: 47rpx; }
+.admin-kicker { color: #719887; font-size: 19rpx; letter-spacing: 3rpx; margin-top: 47rpx; }
+.admin-title { color: #173126; font-size: 48rpx; font-weight: 700; margin-top: 16rpx; }
+.admin-copy { color: #81948a; font-size: 24rpx; line-height: 1.7; margin-top: 20rpx; }
+
+.entry-list { margin-top: 48rpx; background: #fff; border-radius: 22rpx; overflow: hidden; box-shadow: 0 12rpx 30rpx rgba(20,72,43,.06); }
+.entry-item { display: flex; align-items: center; gap: 24rpx; padding: 32rpx 28rpx; border-bottom: 1rpx solid #f0f4f1; }
+.entry-item:last-child { border-bottom: none; }
+.entry-hover { background: #f4faf6; }
+.entry-icon { display: flex; align-items: center; justify-content: center; width: 72rpx; height: 72rpx; border-radius: 22rpx; font-size: 25rpx; font-weight: 800; text-align: center; }
+.entry-icon-green { color: #286e4f; background: #e4f2e9; }
+.entry-icon-amber { color: #286e4f; background: #e4f2e9; }
+.entry-info { flex: 1; }
+.entry-title { font-size: 28rpx; font-weight: 600; color: #1f3027; }
+.entry-desc { font-size: 22rpx; color: #8b9892; margin-top: 6rpx; }
+.entry-arrow { font-size: 36rpx; color: #c0d0c8; }
+
+.admin-status { display: flex; gap: 16rpx; align-items: center; margin-top: 40rpx; padding: 22rpx; border-radius: 22rpx; background: #fff; box-shadow: 0 12rpx 30rpx rgba(20,72,43,.06); }
+.status-dot { width: 18rpx; height: 18rpx; border-radius: 50%; background: #4c9d70; box-shadow: 0 0 0 8rpx #e1f1e6; flex-shrink: 0; }
+.status-title { color: #35664c; font-size: 23rpx; font-weight: 700; }
+.status-copy { color: #8a9b92; font-size: 19rpx; margin-top: 7rpx; }

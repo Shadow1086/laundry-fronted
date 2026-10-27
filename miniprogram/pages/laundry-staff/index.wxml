@@ -1,0 +1,133 @@
+<view class="shell">
+  <!-- idle：扫码 + 订单列表 -->
+  <block wx:if="{{stage === 'idle'}}">
+    <view class="mode-tabs">
+      <view class="tab-item {{mode === 'arrival' ? 'active' : ''}}" bindtap="setMode" data-mode="arrival">确认到店</view>
+      <view class="tab-item {{mode === 'washing' ? 'active' : ''}}" bindtap="setMode" data-mode="washing">洗护完成</view>
+    </view>
+
+    <view wx:if="{{mode !== 'history'}}" class="scan-area" hover-class="scan-hover" bindtap="scanBarcode">
+      <view class="scan-icon"><image src="/assets/icons/scan-line.svg" mode="aspectFit" /></view>
+      <view class="scan-label">{{mode === 'arrival' ? '扫码确认到店' : '扫码完成洗护'}}</view>
+    </view>
+
+    <view class="list-section" wx:if="{{loading}}">
+      <view class="list-empty"><view class="empty-text">订单加载中…</view></view>
+    </view>
+
+    <view class="list-section" wx:elif="{{orderList.length > 0}}">
+      <view class="list-title">{{mode === 'history' ? '历史订单' : (mode === 'arrival' ? '待确认到店' : '待完成洗护')}} · {{orderList.length}}</view>
+      <view class="order-list-item" wx:for="{{orderList}}" wx:key="id"
+            bindtap="tapListOrder" data-id="{{item.id}}">
+        <view class="list-item-main">
+          <view class="list-order-id">{{item.orderNo || '订单号待生成'}}</view>
+          <view class="list-order-meta">{{item.customerName}}<text wx:if="{{item.customerPhone}}"> · </text><text wx:if="{{item.customerPhone}}" class="phone-link" data-phone="{{item.customerPhone}}" catchtap="callCustomer">{{item.customerPhone}}</text></view>
+          <view class="list-order-meta">{{item.storeName}}</view>
+          <view wx:if="{{mode === 'history'}}" class="list-order-meta">{{item.statusLabel}}</view>
+          <view wx:if="{{mode !== 'history'}}" class="list-status-badge {{mode === 'washing' ? 'badge-post' : 'badge-pre'}}">
+            {{mode === 'arrival' ? '确认到店' : '洗护完成'}}
+          </view>
+        </view>
+        <view wx:if="{{mode === 'history'}}" class="list-btn-print" catchtap="openHistoryPrinter" data-id="{{item.id}}">打印</view>
+        <view wx:else class="list-arrow">›</view>
+      </view>
+    </view>
+
+    <view class="list-empty" wx:elif="{{orderList.length === 0}}">
+      <view class="empty-text">暂无{{mode === 'history' ? '历史' : (mode === 'arrival' ? '待确认到店' : '待完成洗护')}}订单</view>
+    </view>
+  </block>
+
+  <!-- working：订单信息 + 操作 -->
+  <block wx:elif="{{stage === 'working'}}">
+    <view class="order-card">
+      <view class="order-header">
+        <view class="order-id">{{order.orderNo || '订单号待生成'}}</view>
+        <view class="status-badge">{{order.statusLabel}}</view>
+      </view>
+      <view class="order-store">{{order.storeName}}</view> 
+      <view class="order-customer">顾客：{{order.customerName}}<text wx:if="{{order.customerPhone}}"> · </text><text wx:if="{{order.customerPhone}}" class="phone-link" data-phone="{{order.customerPhone}}" catchtap="callCustomer">{{order.customerPhone}}</text></view>
+      
+      <view class="items-list">
+        <view class="item-row" wx:for="{{order.items}}" wx:key="name">
+          <text>
+            <text wx:if="{{item.categoryDisplayId}}">{{item.categoryDisplayId}} </text>{{item.categoryDisplayName || item.name}}
+          </text>
+          <text class="item-count">×{{item.count}}</text>
+        </view>
+      </view>
+    </view>
+
+    <block wx:if="{{mode === 'washing' && order.photos.length}}">
+      <view class="section-title">到店验衣照片（{{order.photos.length}} 张）</view>
+      <view class="photo-grid">
+        <view class="grid-item" wx:for="{{order.photos}}" wx:key="*this">
+          <image src="{{item}}" mode="aspectFill" class="grid-img"
+                 data-url="{{item}}" bindtap="previewInspectionPhoto" />
+        </view>
+      </view>
+    </block>
+
+    <block wx:if="{{mode === 'arrival'}}">
+      <view class="section-title">到店验衣拍照（可选）</view>
+      <view class="photo-shoot-area" bindtap="takePhotos">
+        <view class="camera-icon"><image src="/assets/icons/camera.svg" mode="aspectFit" /></view>
+        <view class="camera-main-label">点击拍照</view>
+        <view class="camera-sub-label">可拍摄衣物到店状态，也可直接确认到店</view>
+      </view>
+
+      <block wx:if="{{pendingPhotos.length > 0}}">
+        <view class="photo-count-tip">已拍 {{pendingPhotos.length}} 张，可继续补拍</view>
+        <view class="photo-preview-row">
+          <image wx:for="{{pendingPhotos}}" wx:key="index" wx:for-item="p"
+                 src="{{p}}" mode="aspectFill" class="preview-thumb"/>
+        </view>
+      </block>
+    </block>
+
+    <view class="staff-actions">
+      <view class="btn-secondary" hover-class="btn-hover" bindtap="resetScan">返回列表</view>
+      <view class="btn-secondary" hover-class="btn-hover" bindtap="openPrinter">打印标签</view>
+      <view wx:if="{{mode === 'arrival'}}" class="btn-primary" hover-class="btn-hover" bindtap="goConfirm">确认到店</view>
+      <view wx:else class="btn-primary" hover-class="btn-hover" bindtap="completeWash">{{submitting ? '处理中…' : '确认洗护完成'}}</view>
+    </view>
+  </block>
+
+  <!-- confirm：确认页 -->
+  <block wx:elif="{{stage === 'confirm'}}">
+    <view class="confirm-header">
+      <view class="confirm-title">确认到店</view>
+      <view class="confirm-subtitle">请核对订单信息及拍摄的照片</view>
+    </view>
+
+    <view class="order-card">
+      <view class="order-header">
+        <view class="order-id">{{order.orderNo || '订单号待生成'}}</view>
+        <view class="status-badge">{{order.statusLabel}}</view>
+      </view>
+      <view class="order-store">{{order.storeName}}</view>
+      <view class="order-customer">顾客：{{order.customerName}}<text wx:if="{{order.customerPhone}}"> · </text><text wx:if="{{order.customerPhone}}" class="phone-link" data-phone="{{order.customerPhone}}" catchtap="callCustomer">{{order.customerPhone}}</text></view>
+        <view class="items-list">
+          <view class="item-row" wx:for="{{order.items}}" wx:key="name">
+          <text>
+            <text wx:if="{{item.categoryDisplayId}}">{{item.categoryDisplayId}} </text>{{item.categoryDisplayName || item.name}}
+          </text>
+          <text class="item-count">×{{item.count}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-title">本次拍摄（{{pendingPhotos.length}} 张）</view>
+    <view class="photo-grid">
+      <view class="grid-item" wx:for="{{pendingPhotos}}" wx:key="index" wx:for-item="p">
+        <image src="{{p}}" mode="aspectFill" class="grid-img"/>
+      </view>
+    </view>
+
+    <view class="bottom-bar">
+      <view class="btn-secondary" hover-class="btn-hover" bindtap="backToWorking">重新拍照</view>
+      <view class="btn-primary" hover-class="btn-hover" bindtap="confirmSubmit">{{submitting ? '提交中…' : '确认到店'}}</view>
+    </view>
+  </block>
+
+</view>
