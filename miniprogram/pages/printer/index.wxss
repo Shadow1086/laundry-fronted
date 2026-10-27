@@ -1,0 +1,17 @@
+.page { padding: 32rpx; color: #dc4b32; background: #fff; }
+.order-card { padding: 20rpx 0 28rpx; margin-bottom: 24rpx; }
+.label-preview { display: flex; width: 100%; min-height: 420rpx; align-items: flex-start; }
+.code-area { width: 280rpx; height: 280rpx; margin: 36rpx 22rpx 0 18rpx; border: 5rpx solid #dc4b32; border-radius: 16rpx; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0; }
+.code-placeholder { font-size: 28rpx; font-weight: 600; text-align: center; }
+.label-info { flex: 1; min-width: 0; padding-top: 12rpx; }
+.label-info view { margin-bottom: 34rpx; font-size: 28rpx; line-height: 1.2; font-weight: 600; }
+.label-info text { display: block; word-break: break-all; }
+.label-info text + text { margin-top: 8rpx; font-size: 25rpx; font-weight: 500; }
+.toolbar { display: flex; gap: 20rpx; margin: 24rpx 0; }
+.toolbar button { flex: 1; font-size: 28rpx; }
+.device-list { background: #fff; border-radius: 12rpx; overflow: hidden; }
+.device { padding: 24rpx 28rpx; border-bottom: 1rpx solid #e5ebe7; }
+.device-id, .hint { margin-top: 8rpx; color: #839088; font-size: 24rpx; }
+.scan-state { padding: 20rpx 0; color: #839088; font-size: 26rpx; line-height: 1.5; }
+.connected { color: #286e4f; margin: 20rpx 0; }
+.hint { line-height: 1.6; }

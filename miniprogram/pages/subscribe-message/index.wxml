@@ -1,0 +1,22 @@
+<view class="shell">
+  <view class="hero">
+    <view class="hero-icon"><image src="/assets/icons/circle-check.svg" mode="aspectFit" /></view>
+    <view class="hero-title">下单成功</view>
+    <view class="hero-hint">授权消息通知，及时了解订单受理、洗护完成和取衣提醒</view>
+    <view wx:if="{{orderNo}}" class="order-id">订单号：{{orderNo}}</view>
+  </view>
+
+  <view class="card">
+    <view class="card-title">开启订单提醒</view>
+    <view class="card-desc">微信会在订单状态变化时通知你，不会发送无关消息</view>
+    <view class="btn-primary {{requesting ? 'btn-loading' : ''}}" hover-class="{{requesting ? '' : 'btn-hover'}}" bindtap="requestSubscribe">
+      {{requesting ? '请求授权中…' : '授权消息通知'}}
+    </view>
+    <view wx:if="{{resultMessage}}" class="result-message">{{resultMessage}}</view>
+  </view>
+
+  <view class="actions">
+    <view class="btn-outline" hover-class="btn-hover" bindtap="skip">暂不授权</view>
+    <view class="btn-link" hover-class="btn-hover" bindtap="goHome">返回首页</view>
+  </view>
+</view>

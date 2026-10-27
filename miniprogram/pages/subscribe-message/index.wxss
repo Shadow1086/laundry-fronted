@@ -1,0 +1,20 @@
+page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragino Sans GB', sans-serif; }
+
+.shell { padding: 40rpx 24rpx 80rpx; }
+.hero, .card { padding: 48rpx 28rpx; background: #fff; border-radius: 22rpx; text-align: center; }
+.hero { padding-top: 68rpx; padding-bottom: 52rpx; }
+.hero-icon { display: flex; align-items: center; justify-content: center; width: 88rpx; height: 88rpx; margin: 0 auto; border-radius: 50%; background: #e8f5ee; color: #286e4f; font-size: 42rpx; font-weight: 700; }
+.hero-title { margin-top: 24rpx; color: #1f3027; font-size: 38rpx; font-weight: 700; }
+.hero-hint { margin-top: 14rpx; color: #8b9892; font-size: 24rpx; line-height: 1.6; }
+.order-id { margin-top: 20rpx; color: #9aaa9f; font-size: 20rpx; }
+.card { margin-top: 20rpx; }
+.card-title { color: #1f3027; font-size: 30rpx; font-weight: 600; }
+.card-desc { margin: 12rpx 0 28rpx; color: #8b9892; font-size: 22rpx; line-height: 1.6; }
+.btn-primary, .btn-outline, .btn-link { display: flex; align-items: center; justify-content: center; height: 88rpx; border-radius: 22rpx; font-size: 28rpx; font-weight: 600; }
+.btn-primary { color: #fff; background: #286e4f; }
+.btn-loading { background: #7aaa8f; }
+.result-message { margin-top: 20rpx; color: #4a6457; font-size: 22rpx; line-height: 1.5; }
+.actions { display: flex; align-items: center; gap: 16rpx; margin-top: 20rpx; }
+.btn-outline { flex: 1; color: #286e4f; background: #fff; border: 2rpx solid #c0deca; }
+.btn-link { flex: 1; color: #566b60; background: #eef2ef; }
+.btn-hover { opacity: .72; }
