@@ -1,0 +1,19 @@
+page { background: #f3f6f4; color: #17231f; }
+.edit-page { min-height: 100vh; box-sizing: border-box; padding: 28rpx 24rpx calc(48rpx + env(safe-area-inset-bottom)); background: radial-gradient(circle at 100% 0, #e3f1e8 0, #f3f6f4 42%); }
+.edit-hero { padding: 34rpx 14rpx 26rpx; }
+.edit-kicker { color: #6f9984; font-size: 18rpx; letter-spacing: 3rpx; }
+.edit-title { margin-top: 14rpx; color: #173126; font-size: 46rpx; font-weight: 700; }
+.edit-copy { max-width: 620rpx; margin-top: 12rpx; color: #81948a; font-size: 23rpx; line-height: 1.6; }
+.edit-card { padding: 30rpx 26rpx 24rpx; background: #fff; border: 1rpx solid #e9f0eb; border-radius: 24rpx; box-shadow: 0 12rpx 32rpx rgba(20,72,43,.07); }
+.field-block { padding: 8rpx 0 28rpx; border-bottom: 1rpx solid #edf2ef; }
+.phone-block { padding-top: 28rpx; }
+.field-label-row, .phone-row { display: flex; align-items: center; justify-content: space-between; }
+.field-label { color: #294638; font-size: 25rpx; font-weight: 700; }
+.field-input { width: 100%; height: 76rpx; margin-top: 14rpx; padding: 0 18rpx; box-sizing: border-box; color: #17231f; background: #f6faf7; border: 1rpx solid #deebe2; border-radius: 14rpx; font-size: 28rpx; }
+.field-hint { margin-top: 10rpx; color: #9aa9a0; font-size: 19rpx; }
+.bound-state { color: #a27a46; font-size: 19rpx; }.bound-state.is-bound { color: #3c9367; }
+.phone-row { margin-top: 14rpx; padding: 0 0 0 18rpx; min-height: 76rpx; box-sizing: border-box; background: #f6faf7; border: 1rpx solid #deebe2; border-radius: 14rpx; }
+.phone-value { flex: 1; min-width: 0; color: #536b5d; font-size: 27rpx; }
+.phone-auth { flex: 0 0 auto; width: 168rpx; height: 58rpx; margin: 0 9rpx 0 12rpx; padding: 0; color: #fff; background: #286e4f; border-radius: 30rpx; font-size: 21rpx; line-height: 58rpx; }.phone-auth::after { border: 0; }
+.edit-message { margin-top: 20rpx; padding: 16rpx 18rpx; color: #a15e4d; background: #fff3ee; border-radius: 12rpx; font-size: 21rpx; line-height: 1.45; }
+.edit-actions { display: flex; gap: 14rpx; margin-top: 28rpx; }.cancel-action, .save-action { display: flex; align-items: center; justify-content: center; height: 82rpx; border-radius: 18rpx; font-size: 26rpx; font-weight: 700; }.cancel-action { flex: 1; color: #61776b; background: #eef3ef; }.save-action { flex: 2; color: #fff; background: #286e4f; }.save-action.is-saving { background: #82ab93; }

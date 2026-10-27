@@ -1,0 +1,17 @@
+<view wx:if="{{visible}}" class="login-sheet" catchtouchmove="preventTouchMove">
+    <view class="login-backdrop" bindtap="dismiss"></view>
+    <view class="login-content">
+        <view class="login-heading">登录后继续下单</view>
+        <view class="login-description">手机号用于订单通知及存取衣验证，你选择的衣物和柜机会保留。</view>
+        <button wx:if="{{agreementAccepted}}" class="login-primary" open-type="getPhoneNumber" bindgetphonenumber="handlePhoneNumber" loading="{{loginLoading}}" disabled="{{loginLoading}}">手机号快捷登录</button>
+        <button wx:else class="login-primary" bindtap="requestAgreement">手机号快捷登录</button>
+        <view wx:if="{{loginMessage}}" class="login-message">{{loginMessage}}</view>
+        <view class="login-consent">
+            <checkbox-group class="login-check" bindchange="changeAgreement">
+                <label class="login-check-target"><checkbox value="agree" checked="{{agreementAccepted}}" disabled="{{loginLoading}}" color="#286e4f" /></label>
+            </checkbox-group>
+            <view class="login-agreements"><text>我已阅读并同意</text><text class="login-link" data-type="service" bindtap="openAgreement">《用户服务协议》</text><text>及</text><text class="login-link" data-type="privacy" bindtap="openAgreement">《隐私政策》</text></view>
+        </view>
+        <button class="login-cancel" bindtap="dismiss" disabled="{{loginLoading}}">暂不登录，继续浏览</button>
+    </view>
+</view>

@@ -1,0 +1,11 @@
+<view class="legal-page">
+    <view class="legal-title">{{title}}</view>
+    <view class="legal-brand">洛克洗护</view>
+    <view class="legal-brand">运营主体：{{operator}}</view>
+    <view class="legal-brand">隐私咨询电话：{{privacyPhone}}</view>
+    <view class="legal-section" wx:for="{{sections}}" wx:key="title">
+        <view class="section-title">{{item.title}}</view>
+        <text class="section-text" selectable="true">{{item.text}}</text>
+    </view>
+    <button class="contact-button" loading="{{contacting}}" disabled="{{contacting}}" bindtap="contact">拨打隐私咨询电话</button>
+</view>

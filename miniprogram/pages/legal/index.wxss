@@ -1,0 +1,8 @@
+page { background: #fff; color: #24362d; }
+.legal-page { padding: 40rpx 32rpx calc(48rpx + env(safe-area-inset-bottom)); }
+.legal-title { font-size: 38rpx; font-weight: 600; line-height: 1.5; }
+.legal-brand { margin-top: 12rpx; color: #65746d; font-size: 26rpx; }
+.legal-section { margin-top: 36rpx; }
+.section-title { font-size: 29rpx; font-weight: 600; line-height: 1.6; margin-bottom: 12rpx; }
+.section-text { font-size: 27rpx; line-height: 1.9; overflow-wrap: anywhere; }
+.contact-button { margin-top: 40rpx; border-radius: 12rpx; background: #eef5f0; color: #286e4f; font-size: 28rpx; }

@@ -1,6 +1,23 @@
-<view class="profile-shell"><scroll-view class="profile-scroll" scroll-y="true" enhanced="true" show-scrollbar="false"><view class="profile-head"><view class="profile-identity"><view class="profile-kicker">易净洗护账号</view><view class="profile-name">{{userName}}</view><view class="profile-phone"><text class="phone-status-dot"></text>{{phone}}</view></view><view class="profile-edit" bindtap="editProfile">账号信息 ›</view></view>
-  <view class="member-banner fade-in"><view><view class="member-eyebrow">EASY CLEAN MEMBER</view><view class="member-title">易净会籍身份</view><view class="member-desc">一年有效 · 享分类会员价</view></view><button bindtap="openMember">立即办理 <text>36¥</text></button></view>
-  <view class="panel fade-in"><view class="card-title-row"><view class="card-title">我的订单</view><view class="card-caption" bindtap="goOrders">查看全部 ›</view></view><view class="order-stats"><view wx:for="{{orderStats}}" wx:key="label" bindtap="goOrders"><view class="stat-icon {{item.tone}}">{{item.icon}}</view><view class="stat-number">{{item.count}}</view><view class="stat-label">{{item.label}}</view></view></view></view>
-  <view class="panel fade-in delay-1"><view class="card-title-row"><view class="card-title">常用功能</view><view class="card-caption">快捷服务</view></view><view class="function-grid"><view wx:for="{{functions}}" wx:key="label" class="function-item" bindtap="onFunction" data-label="{{item.label}}"><view class="function-icon {{item.tone}}">{{item.icon}}</view><view>{{item.label}}</view></view><view class="function-item" bindtap="goAdmin"><view class="function-icon function-olive">⚙</view><view>管理员入口</view></view></view></view>
-  <view class="admin-note">管理员入口对所有用户可见，实际权限由服务端校验。</view>
-</scroll-view></view>
+<view class="profile-shell"><scroll-view class="profile-scroll" scroll-y="true" enhanced="true" show-scrollbar="false"><view class="profile-head"><view class="profile-identity"><view class="profile-kicker">洛克洗护账号</view><view class="profile-name">{{userName}}</view><view class="profile-phone"><text class="phone-status-dot"></text>{{phone}}</view></view><view class="profile-edit" bindtap="editProfile">账号信息 ›</view></view>
+  <view class="member-banner fade-in"><view><view class="member-eyebrow">LOCK LAUNDRY MEMBER</view><view class="member-title">洛克会籍身份</view><view class="member-desc">{{isMember ? ('会员有效期至 ' + membershipExpiresAt) : '一年有效 · 享分类会员价'}}</view></view><button wx:if="{{!isMember}}" bindtap="openMember">立即购买</button></view>
+  <view class="panel fade-in"><view class="card-title-row"><view class="card-title">我的订单</view><view class="card-caption" bindtap="goOrders">查看全部 ›</view></view><view class="order-stats"><view wx:for="{{orderStats}}" wx:key="label" bindtap="goOrders" data-filter="{{item.filter}}"><view class="stat-icon {{item.tone}}"><image src="{{item.icon}}" mode="aspectFit" /></view><view class="stat-number">{{item.count}}</view><view class="stat-label">{{item.label}}</view></view></view></view>
+  <view class="panel fade-in delay-1"><view class="card-title-row"><view class="card-title">常用功能</view><view class="card-caption">快捷服务</view></view><view class="function-grid"><block wx:for="{{functions}}" wx:key="label"><button wx:if="{{item.isPhone}}" class="function-item function-button" open-type="getPhoneNumber" bindgetphonenumber="handlePhoneNumber" loading="{{phoneLoading}}" disabled="{{phoneLoading}}" data-label="{{item.label}}"><view class="function-icon {{item.tone}}"><image src="{{item.icon}}" mode="aspectFit" /></view><view>{{phoneLoading ? '正在绑定' : item.label}}</view></button><view wx:else class="function-item" bindtap="onFunction" data-label="{{item.label}}"><view class="function-icon {{item.tone}}"><image src="{{item.icon}}" mode="aspectFit" /></view><view>{{item.label}}</view></view></block><view class="function-item" wx:if="{{canAccessAdmin}}" bindtap="goAdmin"><view class="function-icon function-olive"><image src="/assets/icons/shield-check.svg" mode="aspectFit" /></view><view>管理员入口</view></view></view></view>
+  <view class="admin-note">管理入口仅向具备权限的账号显示，关键操作由服务端再次校验。</view>
+</scroll-view>
+<view wx:if="{{contactPanelVisible}}" class="contact-mask" catchtap="closeContactPanel">
+  <view class="contact-sheet" catchtap="noop">
+    <view class="contact-sheet-head">
+      <view><view class="contact-sheet-kicker">LOCK LAUNDRY SUPPORT</view><view class="contact-sheet-title">联系客服</view><view class="contact-sheet-subtitle">选择一个电话，我们会尽快为你提供帮助</view></view>
+      <view class="contact-close" catchtap="closeContactPanel">×</view>
+    </view>
+    <view class="contact-group">
+      <view class="contact-group-label">服务电话</view>
+      <view wx:for="{{servicePhones}}" wx:key="phone" class="contact-row" data-index="{{index}}" catchtap="dialServicePhone">
+        <view class="contact-row-icon">☎</view>
+        <view class="contact-row-main"><view class="contact-row-name">{{item.contactType === 'PLATFORM' ? '平台客服' : (item.serviceSiteName || item.description || '门店客服')}}</view><view class="contact-row-number">{{item.phone}}</view></view>
+        <view class="contact-row-action">拨打</view>
+      </view>
+    </view>
+  </view>
+</view>
+</view>
