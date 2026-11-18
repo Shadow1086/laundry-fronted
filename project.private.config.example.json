@@ -1,0 +1,9 @@
+{
+  "description": "Local-only WeChat DevTools settings template. Copy to project.private.config.json and keep personal settings out of Git.",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "postcss": true,
+    "minified": true
+  }
+}
