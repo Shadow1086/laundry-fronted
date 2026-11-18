@@ -1,3 +1,4 @@
+const newcomerTour = require('../../services/newcomer-tour');
 const authService = require('../../services/auth-service');
 const orderApi = require('../../api/order');
 const deviceCommandApi = require('../../api/device-command');
@@ -93,7 +94,7 @@ function getCabinetOperationId(result) {
   return typeof value === 'string' || typeof value === 'number' ? String(value) : '';
 }
 
-Page({
+Page(newcomerTour.attachPage({
   data: {
     order: null,
     statusInfo: null,
@@ -114,8 +115,13 @@ Page({
       }));
     }
     if (!authService.requireLogin()) return;
-    if (scanSceneKey && !['manager', 'staff'].includes(authService.getRole())) {
-      wx.reLaunch({ url: '/pages/home/index' });
+    if (scanSceneKey || options.scanEntry === '1') {
+      const scanUrl = scanContext.buildLaunchUrl({
+        path: 'pages/order-detail/order-detail',
+        query: options,
+      });
+      const target = scanContext.resolvePendingLaunch(scanUrl, authService.getRole());
+      if (target !== scanUrl) wx.reLaunch({ url: target });
       return;
     }
     const orderId = options.orderId || options.id;
@@ -196,6 +202,7 @@ Page({
         id: response.orderId ?? response.id,
         orderId: response.orderId ?? response.id,
         orderNo: String(response.orderNo || ''),
+        remark: String(response.remark || '').trim(),
         deliveryCode,
         hasDeliveryCode: /^[A-Za-z0-9]{4}$/.test(deliveryCode),
         status,
@@ -477,4 +484,4 @@ Page({
       fail: () => wx.showToast({ title: '申请页面打开失败，请重试', icon: 'none' }),
     });
   },
-});
+}, 'detail'));

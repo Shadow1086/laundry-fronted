@@ -8,7 +8,7 @@
     <view class="loading-text">{{loadError}}</view>
   </view>
   <block wx:elif="{{order}}">
-    <view class="status-header status-{{statusInfo.color}}">
+    <view id="guide-status" class="status-header status-{{statusInfo.color}}">
       <view class="status-main">
         <view class="status-label">{{statusInfo.label}}</view>
         <view class="status-hint">{{statusInfo.hint}}</view>
@@ -70,6 +70,10 @@
       <view wx:if="{{order.userPhone}}" class="info-row">
         <text class="info-label">联系电话</text>
         <text class="info-value">{{order.userPhone}}</text>
+      </view>
+      <view class="info-row info-row-remark">
+        <text class="info-label">订单备注</text>
+        <text class="info-value info-value-remark">{{order.remark || '无备注'}}</text>
       </view>
       <view wx:if="{{order.cabinetName}}" class="info-row">
         <text class="info-label">柜机名称</text>
@@ -144,13 +148,13 @@
         bindtap="cancelOrder"
       >{{actionSubmitting ? '取消中...' : '取消订单'}}</view>
       <view
-        wx:if="{{order.canPickup}}"
+        id="guide-pickup" wx:if="{{order.canPickup}}"
         class="btn-primary {{actionSubmitting ? 'btn-disabled' : ''}}"
         hover-class="{{actionSubmitting ? '' : 'btn-hover'}}"
         bindtap="scanPickup"
       >{{order.canPickupCancelledOrder ? '取出衣物' : '取衣开柜'}}</view>
       <view
-        wx:if="{{order.canApplyRewash}}"
+        id="{{!order.rewashRequested ? 'guide-rewash' : ''}}" wx:if="{{order.canApplyRewash}}"
         class="btn-secondary {{actionSubmitting || order.rewashRequested ? 'btn-disabled' : ''}}"
         hover-class="btn-hover"
         bindtap="applyRewash"
@@ -158,3 +162,4 @@
     </view>
   </block>
 </view>
+<newcomer-guide visible="{{newcomerVisible}}" user-key="{{newcomerUserKey}}" step="{{newcomerStep}}" target="{{newcomerTarget}}" progress="{{newcomerProgress}}" can-previous="{{newcomerCanPrevious}}" last-step="{{newcomerLastStep}}" bind:targetmissing="handleNewcomerTargetMissing" bind:next="handleNewcomerNext" bind:previous="handleNewcomerPrevious" bind:dismiss="handleNewcomerDismiss" />

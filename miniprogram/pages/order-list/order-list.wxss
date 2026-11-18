@@ -214,3 +214,34 @@ page { background: #f2f5f1; color: #17231f; font-family: 'PingFang SC', 'Hiragin
 }
 
 .detail-arrow { display: inline-block; margin-left: 6rpx; font-size: 28rpx; vertical-align: -1rpx; }
+
+.order-count, .loading-state, .loading-text { font-size: 25rpx; }
+.card-number, .status-tag, .pickup-code-label { font-size: 22rpx; }
+
+/* Readability pass: keep the order card as one readable column on narrow phones. */
+.filter-tab { min-height: 88rpx; padding: 24rpx 22rpx 21rpx; font-size: 27rpx; }
+.order-card { padding: 32rpx 28rpx 26rpx; }
+.card-location { font-size: 28rpx; }
+.card-number { margin-top: 10rpx; font-size: 23rpx; }
+.status-tag { padding: 9rpx 18rpx; font-size: 24rpx; }
+.card-time { margin-bottom: 18rpx; font-size: 24rpx; line-height: 1.5; }
+.remark-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 16rpx;
+  margin-bottom: 16rpx;
+  background: #fffaf0;
+  border: 1rpx solid #f0e2c4;
+  border-radius: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+.remark-label { flex-shrink: 0; color: #9a7a3a; }
+.remark-value { min-width: 0; flex: 1; color: #4e4637; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.category-row { padding: 16rpx; margin-bottom: 18rpx; font-size: 24rpx; line-height: 1.5; }
+.category-label, .pickup-code-label, .price-label { font-size: 23rpx; }
+.pickup-code-row { padding: 16rpx; }
+.pickup-code-value { font-size: 30rpx; }
+.price-val.estimate { font-size: 26rpx; }
+.detail-link { font-size: 25rpx; }

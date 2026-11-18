@@ -1,9 +1,9 @@
 const ENV = {
-  // 开发工具中可使用显式演示登录，真实接口失败时不会自动降级。
-  development: { apiBaseUrl: '', demoMode: true },
-  production: { apiBaseUrl: '', demoMode: false },
+  development: { apiBaseUrl: 'http://127.0.0.1:8080' },
+  production:  { apiBaseUrl: 'https://api.shepishi.cn' },
 };
 
-const currentEnv = 'development';
+// 当前使用真实后端环境。
+const currentEnv = 'production';
 
 module.exports = ENV[currentEnv];

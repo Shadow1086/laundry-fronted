@@ -64,12 +64,28 @@ function buildLaunchUrl(options) {
   return `/${path}${pairs.length ? `?${pairs.join('&')}` : ''}`;
 }
 
+function buildOrderScanUrl(context, role) {
+  const scan = context || {};
+  const query = scan.type === 'order-scene'
+    ? { scanEntry: '1', scanSceneKey: scan.value }
+    : { scanEntry: '1', orderId: scan.value };
+  const pathByRole = {
+    staff: 'pages/laundry-staff/index',
+    manager: 'pages/area-manager/index',
+    admin: 'pages/admin-entry/index',
+  };
+  const path = pathByRole[role];
+  return path ? buildLaunchUrl({ path, query }) : '/pages/home/index';
+}
+
 function resolvePendingLaunch(url, role) {
-  const context = parse(parseQuery(url));
-  if (context.type === 'order-scene' && !['manager', 'staff'].includes(role)) {
-    return '/pages/home/index';
+  const query = parseQuery(url);
+  const context = parse(query);
+  const isOrderScan = query.scanEntry === '1' || context.type === 'order-scene';
+  if (isOrderScan && (context.type === 'order' || context.type === 'order-scene')) {
+    return buildOrderScanUrl(context, role);
   }
   return url;
 }
 
-module.exports = { buildLaunchUrl, parse, parseScanResult, resolvePendingLaunch };
+module.exports = { buildLaunchUrl, buildOrderScanUrl, parse, parseScanResult, resolvePendingLaunch };

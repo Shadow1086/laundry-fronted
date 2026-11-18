@@ -1,3 +1,4 @@
+const newcomerTour = require('../../services/newcomer-tour');
 const orderApi = require('../../api/order');
 const authService = require('../../services/auth-service');
 const STATUS = require('../../constants/order-status');
@@ -68,7 +69,7 @@ function getOrderTimestamp(order) {
   ].map(parseTimestamp).find((value) => value > 0) || 0;
 }
 
-Page({
+Page(newcomerTour.attachPage({
   data: {
     loading: true,
     orders: [],
@@ -224,4 +225,4 @@ Page({
     }
     this.setData({ filtered });
   },
-});
+}, 'list'));

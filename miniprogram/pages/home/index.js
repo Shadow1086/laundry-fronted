@@ -1,3 +1,4 @@
+const newcomerTour = require('../../services/newcomer-tour');
 const authService = require('../../services/auth-service');
 const cabinetService = require('../../services/cabinet-service');
 const errorUtil = require('../../utils/error');
@@ -13,9 +14,10 @@ const ROLE_LANDING = {
   [ROLE.STAFF]: '/pages/laundry-staff/index',
 };
 
-Page({
+Page(newcomerTour.attachPage({
   data: {
     userName: '洛克用户',
+    nickname: '',
     phoneBound: false,
     selectedStore: 'GZ明祥园点',
     stores: cabinetService.getStores(),
@@ -29,15 +31,26 @@ Page({
     storesMessage: '',
     selectedStoreInfo: null,
     isMember: false,
+    newcomerVisible: false,
+    newcomerUserKey: '',
   },
 
   onLoad() {
-    this.syncAuthState();
+    this.syncUser();
   },
 
   onShow() {
+    this._homeVisible = true;
     this.syncAuthState();
     this.loadHomeStores();
+  },
+
+  onHide() {
+    this._homeVisible = false;
+  },
+
+  onUnload() {
+    this._homeVisible = false;
   },
 
   async loadHomeStores() {
@@ -69,16 +82,20 @@ Page({
       wx.showTabBar({ animation: true });
       this.syncUser();
       // 登录接口返回的用户可能只有 id/角色，首页显示前再拉取完整资料。
-      authService.fetchAndSaveProfile().then(() => this.syncUser()).catch(() => {});
-      this.checkPendingOrder();
+      authService.fetchAndSaveProfile().then(() => {
+        if (!this._homeVisible) return;
+        this.syncUser();
+        if (!this.showNewcomerGuide()) this.checkPendingOrder();
+      }).catch(() => {});
     } else {
+      if (this.data.newcomerVisible) this.setData({ newcomerVisible: false });
       // 首页允许游客浏览，只有点击受保护功能时才强制授权。
       wx.showTabBar({ animation: false });
     }
   },
 
   async checkPendingOrder() {
-    if (this.data.handlingOrder) return;
+    if (!this._homeVisible || this.data.handlingOrder || this.data.newcomerVisible || this._pendingOrderModal) return;
     this.setData({ handlingOrder: true });
     try {
       const result = await orderApi.getOrders({
@@ -112,8 +129,10 @@ Page({
         return sum + (Number.isFinite(amount) ? amount : 0);
       }, 0);
       const promptKey = `${showingUnpaid ? 'unpaid' : 'paid'}:${targetOrders.map((order) => order.orderId).join(',')}:${totalAmount}`;
+      if (!this._homeVisible || this.data.newcomerVisible) return;
       if (this._lastPromptOrderKey === promptKey) return;
       this._lastPromptOrderKey = promptKey;
+      this._pendingOrderModal = true;
       wx.showModal({
         title: showingUnpaid ? '订单待付款' : '衣物待取',
         content: showingUnpaid
@@ -121,6 +140,7 @@ Page({
           : `你有 ${paidOrders.length} 个订单已支付，衣物正在柜中等待领取。`,
         confirmText: showingUnpaid ? '去付款' : '去取衣',
         cancelText: '稍后处理',
+        complete: () => { this._pendingOrderModal = false; },
         success: ({ confirm }) => {
           if (!confirm) return;
           if (targetOrders.length > 1) {
@@ -226,11 +246,12 @@ Page({
   },
 
   dismissAuth() {
-    this.setData({ authVisible: false, loginMessage: '', agreementAccepted: false });
+    this.setData({ authVisible: false, loginMessage: '', agreementAccepted: false, nickname: '' });
   },
 
   changeAgreement(e) {
-    this.setData({ agreementAccepted: e.detail.value.includes('agree') });
+    const agreementAccepted = e.detail.value.includes('agree');
+    this.setData({ agreementAccepted, nickname: agreementAccepted ? this.data.nickname : '' });
   },
 
   openAgreement(e) {
@@ -280,12 +301,23 @@ Page({
     });
   },
 
+  handleNicknameInput(e) {
+    this.setData({ nickname: String(e.detail.value || '').trim() });
+  },
+
   async loginWithCodes(loginCode, phoneCode) {
     if (!this.data.agreementAccepted || !loginCode || !phoneCode || this.data.loginLoading) return;
     this.setData({ loginLoading: true, loginMessage: '' });
     try {
-      await authService.login({ loginCode, phoneCode });
-      this.setData({ authVisible: false, agreementAccepted: false });
+      const result = await authService.login({
+        loginCode,
+        phoneCode,
+        ...(this.data.nickname ? { nickname: this.data.nickname } : {}),
+      });
+      if (result.nicknameSaved === false) {
+        wx.showToast({ title: '昵称暂未保存，可稍后在账号信息中修改', icon: 'none' });
+      }
+      this.setData({ authVisible: false, agreementAccepted: false, nickname: '' });
       const pendingLaunch = session.consumePendingLaunch();
       if (pendingLaunch) {
         wx.reLaunch({ url: require('../../utils/scan-context').resolvePendingLaunch(pendingLaunch, authService.getRole()) });
@@ -299,6 +331,7 @@ Page({
       this.setData({ loginLoading: false, authenticated: true });
       wx.showTabBar({ animation: true });
       this.syncUser();
+      if (!this.showNewcomerGuide()) this.checkPendingOrder();
     } catch (error) {
       this.setData({
         loginLoading: false,
@@ -375,4 +408,4 @@ Page({
   },
   showPromotion() { wx.showToast({ title: '活动即将上线，敬请期待', icon: 'none' }); },
 
-});
+}, 'home'));

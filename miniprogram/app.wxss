@@ -15,6 +15,7 @@ page {
   --safe-bottom: env(safe-area-inset-bottom);
   --tabbar-space: 112rpx;
   min-height: 100%;
+  font-size: 28rpx;
   color: var(--ink-900);
   background: var(--canvas);
   font-family: "PingFang SC", "Hiragino Sans GB", sans-serif;
@@ -80,9 +81,9 @@ button,
 .status-badge image { width: 48rpx; height: 48rpx; }
 .list-btn-call image { width: 27rpx; height: 27rpx; }
 .safe-tip text image { width: 23rpx; height: 23rpx; }
-.agreement-row { margin-top: 24rpx; font-size: 24rpx; line-height: 1.8; color: #53665c; white-space: normal; }
+.agreement-row { margin-top: 24rpx; font-size: 26rpx; line-height: 1.8; color: #53665c; white-space: normal; }
 .agreement-link { color: #286e4f; padding: 8rpx 0; }
-.agreement-consent { display: flex; align-items: flex-start; gap: 8rpx; margin-top: 24rpx; color: #6c7b73; font-size: 23rpx; line-height: 40rpx; }
+.agreement-consent { display: flex; align-items: flex-start; gap: 8rpx; margin-top: 24rpx; color: #6c7b73; font-size: 25rpx; line-height: 1.65; }
 .agreement-check { flex: 0 0 48rpx; width: 48rpx; }
 .agreement-check-target { display: flex; align-items: center; justify-content: center; width: 48rpx; height: 48rpx; margin-top: -4rpx; }
 .agreement-check checkbox { transform: scale(.68); transform-origin: center; }

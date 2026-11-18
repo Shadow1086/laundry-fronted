@@ -22,11 +22,11 @@ page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragin
 .list-item-main { flex: 1; }
 .list-order-id { font-size: 24rpx; font-weight: 700; color: #286e4f; }
 .list-order-meta { font-size: 20rpx; color: #8b9892; margin-top: 4rpx; }
+.order-remark { color: #566b60; line-height: 1.45; word-break: break-all; }
 .list-status-badge { display: inline-block; margin-top: 10rpx; font-size: 20rpx; padding: 4rpx 14rpx; border-radius: 16rpx; font-weight: 600; }
 .badge-pre { background: #e8f5ee; color: #286e4f; }
 .badge-post { background: #fff3e0; color: #a05a10; }
 .list-arrow { font-size: 36rpx; color: #c0d0c8; margin-left: 12rpx; }
-.list-btn-print { height: 64rpx; padding: 0 20rpx; display: flex; align-items: center; justify-content: center; border: 1rpx solid #9bbcac; border-radius: 16rpx; color: #286e4f; background: #fff; font-size: 24rpx; font-weight: 600; flex-shrink: 0; }
 .list-empty { padding: 60rpx 0; text-align: center; }
 .empty-text { font-size: 26rpx; color: #b0c0b8; }
 
@@ -82,3 +82,26 @@ page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragin
 .btn-primary[disabled], .btn-primary.is-submitting { opacity: .6; }
 .btn-secondary { color: #566b60; background: #eef2ef; }
 .btn-hover { opacity: 0.72; }
+
+/* Order rows and working cards are optimized for quick scanning and touch input. */
+.mode-tabs { margin-bottom: 28rpx; }
+.tab-item { min-height: 76rpx; padding: 22rpx 0; font-size: 30rpx; }
+.scan-area { min-height: 104rpx; padding: 24rpx 28rpx; }
+.scan-label { font-size: 30rpx; }
+.list-title { font-size: 26rpx; }
+.order-list-item { align-items: flex-start; min-height: 136rpx; padding: 28rpx 24rpx; }
+.list-item-main { min-width: 0; }
+.list-order-id { font-size: 28rpx; }
+.list-order-meta { margin-top: 8rpx; font-size: 24rpx; line-height: 1.5; }
+.order-list-item .order-remark { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.order-card .order-remark { display: block; overflow: visible; -webkit-line-clamp: unset; }
+.list-arrow { flex-shrink: 0; margin-top: 26rpx; margin-left: 18rpx; font-size: 42rpx; }
+.order-header { margin-bottom: 12rpx; }
+.order-id { font-size: 29rpx; }
+.status-badge { padding: 8rpx 18rpx; font-size: 23rpx; }
+.order-store, .order-customer { font-size: 25rpx; line-height: 1.55; }
+.items-list { margin-top: 18rpx; padding-top: 18rpx; }
+.item-row { padding: 14rpx 0; font-size: 28rpx; }
+.section-title { font-size: 28rpx; }
+.camera-sub-label { font-size: 24rpx; line-height: 1.5; text-align: center; }
+.btn-primary, .btn-secondary { min-height: 96rpx; height: 96rpx; font-size: 30rpx; }

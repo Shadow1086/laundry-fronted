@@ -1,6 +1,7 @@
 {
-    "navigationBarTitleText": "下单",
-    "usingComponents": {
-        "login-sheet": "/components/login-sheet/index"
-    }
+  "navigationBarTitleText": "下单",
+  "usingComponents": {
+    "login-sheet": "/components/login-sheet/index",
+    "newcomer-guide": "/components/newcomer-guide/index"
+  }
 }

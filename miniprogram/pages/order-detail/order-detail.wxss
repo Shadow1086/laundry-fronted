@@ -210,6 +210,8 @@ page { background: #f2f5f1; color: #17231f; font-family: 'PingFang SC', 'Hiragin
 .info-label { color: #8b9892; flex-shrink: 0; }
 
 .info-value { color: #1f3027; text-align: right; }
+.info-row-remark { align-items: flex-start; }
+.info-value-remark { max-width: 72%; line-height: 1.5; word-break: break-all; }
 
 .info-id { color: #6a7e74; font-size: 20rpx; letter-spacing: 1rpx; }
 
@@ -307,3 +309,23 @@ page { background: #f2f5f1; color: #17231f; font-family: 'PingFang SC', 'Hiragin
 
 .history-label { color: #1f3027; font-size: 24rpx; }
 .history-time { margin-left: 20rpx; color: #8b9892; font-size: 20rpx; text-align: right; }
+.loading-state, .loading-text, .status-hint, .progress-step, .history-time, .info-id { font-size: 24rpx; }
+.item-count, .info-pending { font-size: 25rpx; }
+
+/* Readability pass: give labels and long values enough measure to reflow cleanly. */
+.progress-track { padding: 34rpx 28rpx 30rpx; }
+.progress-step { font-size: 23rpx; }
+.step-time { font-size: 21rpx; }
+.section-head { padding: 28rpx 0 20rpx; font-size: 25rpx; }
+.item-row { padding: 24rpx 0; }
+.item-name { font-size: 28rpx; }
+.item-category { font-size: 22rpx; }
+.info-row { min-height: 82rpx; font-size: 26rpx; line-height: 1.5; }
+.info-label { margin-right: 24rpx; }
+.info-value { max-width: 64%; font-size: 26rpx; }
+.info-row-remark { display: block; padding: 22rpx 0; }
+.info-row-remark .info-label { display: block; margin-bottom: 10rpx; }
+.info-value-remark { display: block; max-width: none; text-align: left; line-height: 1.65; }
+.info-id { font-size: 23rpx; }
+.history-label { font-size: 26rpx; }
+.history-time { font-size: 23rpx; }

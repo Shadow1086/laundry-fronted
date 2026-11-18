@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "确认下单"
+  "navigationBarTitleText": "确认下单",
+  "usingComponents": {
+    "newcomer-guide": "/components/newcomer-guide/index"
+  }
 }

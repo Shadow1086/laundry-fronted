@@ -13,6 +13,7 @@ const ROLE_LANDING = {
 Page({
   data: {
     phoneAuthorized: false,
+    nickname: '',
     agreementAccepted: false,
     loading: false,
     message: '',
@@ -55,14 +56,22 @@ Page({
     });
   },
 
+  handleNicknameInput(e) {
+    this.setData({ nickname: String(e.detail.value || '').trim() });
+  },
+
   async loginWithCodes(loginCode, phoneCode) {
     if (!this.data.agreementAccepted || !loginCode || !phoneCode || this.data.loading) return;
     this.setData({ loading: true, message: '正在登录…', messageType: 'info' });
     try {
-      await authService.login({
+      const result = await authService.login({
         loginCode,
         phoneCode,
+        ...(this.data.nickname ? { nickname: this.data.nickname } : {}),
       });
+      if (result.nicknameSaved === false) {
+        wx.showToast({ title: '昵称暂未保存，可稍后在账号信息中修改', icon: 'none' });
+      }
       this._redirectByRole();
     } catch (error) {
       this.setData({ loading: false, phoneAuthorized: false, message: errorUtil.getMessage(error, '登录失败，请稍后再试'), messageType: 'error' });
@@ -70,7 +79,8 @@ Page({
   },
 
   changeAgreement(e) {
-    this.setData({ agreementAccepted: e.detail.value.includes('agree') });
+    const agreementAccepted = e.detail.value.includes('agree');
+    this.setData({ agreementAccepted, nickname: agreementAccepted ? this.data.nickname : '' });
   },
   openAgreement(e) {
     wx.navigateTo({ url: `/pages/legal/index?type=${e.currentTarget.dataset.type}` });

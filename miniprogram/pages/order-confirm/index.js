@@ -1,10 +1,11 @@
+const newcomerTour = require('../../services/newcomer-tour');
 const orderApi = require('../../api/order');
 const authService = require('../../services/auth-service');
 const errorUtil = require('../../utils/error');
 const serviceConfigApi = require('../../api/service-config');
 const locationService = require('../../services/location-service');
 
-Page({
+Page(newcomerTour.attachPage({
   data: {
     items: [],
     cabinetType: 'small',
@@ -15,6 +16,7 @@ Page({
     idempotencyKey: '',
     requestId: '',
     memberPriceApplied: false,
+    remark: '',
     // 原始 payload 用于提交
     _payload: null,
   },
@@ -78,6 +80,10 @@ Page({
     });
   },
 
+  onRemarkInput(event) {
+    this.setData({ remark: String(event.detail.value || '').slice(0, 500) });
+  },
+
   async confirmOrder() {
     if (this.data.submitting) return;
     if (!this.data._payload) { wx.showToast({ title: '订单参数无效，请返回重试', icon: 'none' }); return; }
@@ -122,6 +128,7 @@ Page({
           })),
           userLatitude: locationCheck.userLocation.latitude,
           userLongitude: locationCheck.userLocation.longitude,
+          remark: String(this.data.remark || '').trim(),
       }, this.data.idempotencyKey);
       const responseData = res && res.data !== undefined ? res.data : res;
       const order = responseData && typeof responseData === 'object'
@@ -131,6 +138,7 @@ Page({
         ? (order.orderId || order.id || order.order?.orderId || order.order?.id)
         : order;
       if (!orderId) {
+        this.setData({ submitting: false });
         wx.showToast({ title: '下单成功，请在订单列表查看', icon: 'none', duration: 2000 });
         setTimeout(() => {
           wx.redirectTo({ url: '/pages/order-list/order-list' });
@@ -159,4 +167,4 @@ Page({
       wx.showToast({ title: errorUtil.getMessage(e, '提交失败，请重试'), icon: 'none' });
     }
   },
-});
+}, 'confirm'));

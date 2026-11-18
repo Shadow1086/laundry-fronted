@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "洛克洗护"
+  "navigationBarTitleText": "洛克洗护",
+  "usingComponents": {
+    "newcomer-guide": "/components/newcomer-guide/index"
+  }
 }

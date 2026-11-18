@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "申请返洗"
+  "navigationBarTitleText": "申请返洗",
+  "usingComponents": {
+    "newcomer-guide": "/components/newcomer-guide/index"
+  }
 }

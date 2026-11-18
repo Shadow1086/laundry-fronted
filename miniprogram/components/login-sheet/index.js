@@ -7,7 +7,7 @@ Component({
             type: Boolean,
             value: false,
             observer(visible) {
-                if (visible) this.setData({ agreementAccepted: false, loginMessage: '' });
+                if (visible) this.setData({ agreementAccepted: false, loginMessage: '', nickname: '' });
             },
         },
     },
@@ -15,16 +15,18 @@ Component({
         agreementAccepted: false,
         loginLoading: false,
         loginMessage: '',
+        nickname: '',
     },
     methods: {
         preventTouchMove() {},
         dismiss() {
             if (this.data.loginLoading) return;
-            this.setData({ agreementAccepted: false, loginMessage: '' });
+            this.setData({ agreementAccepted: false, loginMessage: '', nickname: '' });
             this.triggerEvent('dismiss');
         },
         changeAgreement(e) {
-            this.setData({ agreementAccepted: e.detail.value.includes('agree') });
+            const agreementAccepted = e.detail.value.includes('agree');
+            this.setData({ agreementAccepted, nickname: agreementAccepted ? this.data.nickname : '' });
         },
         openAgreement(e) {
             wx.navigateTo({ url: `/pages/legal/index?type=${e.currentTarget.dataset.type}` });
@@ -45,15 +47,25 @@ Component({
                 success: async (result) => {
                     try {
                         if (!result.code) throw new Error('微信登录失败，请重试');
-                        await authService.login({ loginCode: result.code, phoneCode: detail.code });
-                        this.setData({ loginLoading: false, agreementAccepted: false });
-                        this.triggerEvent('success');
+                        const loginResult = await authService.login({
+                            loginCode: result.code,
+                            phoneCode: detail.code,
+                            ...(this.data.nickname ? { nickname: this.data.nickname } : {}),
+                        });
+                        if (loginResult.nicknameSaved === false) {
+                            wx.showToast({ title: '昵称暂未保存，可稍后在账号信息中修改', icon: 'none' });
+                        }
+                        this.setData({ loginLoading: false, agreementAccepted: false, nickname: '' });
+                        this.triggerEvent('success', { user: loginResult.user, onboarding: loginResult.onboarding });
                     } catch (error) {
                         this.setData({ loginLoading: false, loginMessage: errorUtil.getMessage(error, '登录失败，请稍后再试') });
                     }
                 },
                 fail: () => this.setData({ loginLoading: false, loginMessage: '微信登录失败，请重试' }),
             });
+        },
+        handleNicknameInput(e) {
+            this.setData({ nickname: String(e.detail.value || '').trim() });
         },
     },
 });

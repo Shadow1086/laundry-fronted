@@ -8,7 +8,7 @@
     <view class="order-count" wx:if="{{orders.length}}"><text>{{orders.length}}</text> 笔</view>
   </view>
 
-  <view class="filter-bar">
+  <view id="guide-filters" class="filter-bar">
     <view
       wx:for="{{filters}}"
       wx:key="key"
@@ -31,7 +31,7 @@
     <view
       wx:for="{{filtered}}"
       wx:key="orderId"
-      class="order-card"
+      id="{{index === 0 ? 'guide-order-card' : ''}}" class="order-card"
       hover-class="card-hover"
       bindtap="goDetail"
       data-order-id="{{item.orderId}}"
@@ -44,6 +44,10 @@
         <view class="status-tag tone-{{item.statusConfig.tone}}">{{item.statusConfig.label}}</view>
       </view>
       <view class="card-time">最近更新于 {{item.updatedAtLabel}} · 创建于 {{item.createdAtLabel}}</view>
+      <view class="remark-row">
+        <text class="remark-label">订单备注</text>
+        <text class="remark-value">{{item.remark || '无备注'}}</text>
+      </view>
       <view class="category-row">
         <text class="category-label">衣物分类</text>
         <text class="category-value">{{item.categorySummary}}</text>
@@ -69,3 +73,4 @@
   </block>
 
 </view>
+<newcomer-guide visible="{{newcomerVisible}}" user-key="{{newcomerUserKey}}" step="{{newcomerStep}}" target="{{newcomerTarget}}" progress="{{newcomerProgress}}" can-previous="{{newcomerCanPrevious}}" last-step="{{newcomerLastStep}}" bind:targetmissing="handleNewcomerTargetMissing" bind:next="handleNewcomerNext" bind:previous="handleNewcomerPrevious" bind:dismiss="handleNewcomerDismiss" />

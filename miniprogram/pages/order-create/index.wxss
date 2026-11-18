@@ -272,6 +272,7 @@ page {
 
 .item-card-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
   gap: 14rpx;
@@ -349,11 +350,13 @@ page {
 
 .item-card-header .item-detail {
   flex-shrink: 0;
+  gap: 8rpx;
   margin-top: 0;
+  white-space: nowrap;
 }
 
 .detail-label {
-  flex: 0 0 58rpx;
+  flex: 0 0 auto;
   color: #7f8d85;
 }
 
@@ -931,4 +934,14 @@ page {
   color: #fff;
   background: #286e4f;
 }
-.member-price-notice { margin: 12rpx 28rpx 0; color: #2f8a5a; font-size: 22rpx; }
+
+/* 提高下单流程的说明、选项和表单文字可读性。 */
+.location-address, .location-map-link, .location-message,
+.section-description, .section-count, .item-comment, .item-detail,
+.member-price, .cabinet-desc, .cabinet-stock, .notice-line,
+.action-message, .selection-copy, .selection-detail,
+.selection-copy text, .selected-total-label, .selected-item-price,
+.confirm-message, .confirm-cabinet-hint { font-size: 25rpx; }
+.section-title { font-size: 31rpx; }
+.step-number, .confirm-cabinet-title { font-size: 26rpx; }
+.member-price-notice { margin: 12rpx 28rpx 0; color: #2f8a5a; font-size: 25rpx; }

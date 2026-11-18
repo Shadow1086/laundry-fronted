@@ -1,3 +1,4 @@
+const newcomerTour = require('../../services/newcomer-tour');
 const authService = require('../../services/auth-service');
 const orderApi = require('../../api/order');
 const cabinetService = require('../../services/cabinet-service');
@@ -5,7 +6,7 @@ const errorUtil = require('../../utils/error');
 
 const REASONS = ['清洁效果不满意', '衣物仍有污渍', '衣物存在异味', '其他原因'];
 
-Page({
+Page(newcomerTour.attachPage({
   data: {
     orderId: '',
     orderNo: '',
@@ -173,4 +174,4 @@ Page({
       this.setData({ submitting: false });
     }
   },
-});
+}, 'rewash'));

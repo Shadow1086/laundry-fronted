@@ -44,6 +44,7 @@ function enrichOrder(raw) {
     ...raw,
     id: String(raw.id ?? raw.orderId ?? ''),
     orderNo: String(raw.orderNo || ''),
+    remark: String(raw.remark || '').trim(),
     status: raw.orderStatus || raw.status || '',
     cabinetType: String(raw.cabinetType || raw.requestedDepositSize || 'small').toLowerCase(),
     statusLabel: STATUS_LABEL[raw.orderStatus || raw.status] || raw.orderStatus || raw.status,
@@ -139,6 +140,8 @@ Page({
       this.setData({ cabinetId: context.value, cabinetName: context.name || '', entrySource: 'cabinet-code' });
       wx.showToast({ title: '已识别柜机', icon: 'success' });
     }
+    const unifiedContext = scanContext.parse(options || {});
+    if (unifiedContext.type === 'order-scene' && unifiedContext.value) this._pendingScanSceneKey = unifiedContext.value;
   },
 
   onShow() {
@@ -153,6 +156,12 @@ Page({
     }
     if (printerService.getState().status !== 'connected') {
       printerService.startDiscovery({ autoConnect: true }).catch(() => {});
+    }
+    if (this._pendingScanSceneKey) {
+      const sceneKey = this._pendingScanSceneKey;
+      this._pendingScanSceneKey = '';
+      this._openOrderByScanScene(sceneKey);
+      return;
     }
     this._refreshList();
   },
@@ -316,10 +325,22 @@ Page({
     try {
       const order = await orderApi.getOrderByScanScene(sceneKey);
       if (!order || !(order.orderId || order.id)) throw new Error('未找到对应订单');
-      this._showOrderFound(order);
+      const detail = await areaAdminApi.getAreaAdminOrderById(order.orderId || order.id);
+      if (!detail) throw new Error('未找到对应订单');
+      this._showOrderFound(detail);
     } catch (error) {
       wx.showToast({ title: error.message || '订单加载失败', icon: 'none' });
     }
+  },
+
+  _modeForScannedOrder(raw) {
+    const stage = String(raw && raw.internalStage || '').toUpperCase();
+    if (stage === 'DEPOSIT_CONFIRMED') return 'pickup';
+    if (stage === 'WASH_FINISHED') return 'delivery';
+    const status = String(raw && (raw.orderStatus || raw.status) || '').toUpperCase();
+    if (status === 'WAITING_PICKUP' || status === 'PENDING_PICKUP') return 'pickup';
+    if (status === 'WAITING_RETURN') return 'delivery';
+    return '';
   },
 
   callPhone(e) {
@@ -358,8 +379,14 @@ Page({
   },
 
   _showOrderFound(raw) {
+    const mode = this._modeForScannedOrder(raw);
+    if (!mode) {
+      wx.showToast({ title: '该订单当前无需区域管理员操作', icon: 'none' });
+      return;
+    }
     const order = enrichOrder(raw);
     this.setData({
+      mode,
       order,
       selectedCabinetType: order.cabinetType,
       returnOperationId: '',

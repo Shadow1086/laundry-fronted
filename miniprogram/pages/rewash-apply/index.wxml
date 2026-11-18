@@ -7,7 +7,7 @@
       <view class="order-number">订单 {{orderNo}}</view>
     </view>
 
-    <view class="form-section location-section">
+    <view id="guide-rewash-form" class="form-section location-section">
       <view class="section-heading"><view class="section-title">返洗存放位置</view></view>
       <picker class="cabinet-picker" mode="selector" range="{{cabinetNames}}" value="{{cabinetIndex}}" bindchange="onCabinetChange">
         <view class="cabinet-picker-content">
@@ -68,3 +68,4 @@
     </view>
   </block>
 </view>
+<newcomer-guide visible="{{newcomerVisible}}" user-key="{{newcomerUserKey}}" step="{{newcomerStep}}" target="{{newcomerTarget}}" progress="{{newcomerProgress}}" can-previous="{{newcomerCanPrevious}}" last-step="{{newcomerLastStep}}" bind:targetmissing="handleNewcomerTargetMissing" bind:next="handleNewcomerNext" bind:previous="handleNewcomerPrevious" bind:dismiss="handleNewcomerDismiss" />

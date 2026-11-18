@@ -3,6 +3,7 @@
     <view class="login-content">
         <view class="login-heading">登录后继续下单</view>
         <view class="login-description">手机号用于订单通知及存取衣验证，你选择的衣物和柜机会保留。</view>
+        <view wx:if="{{agreementAccepted}}" class="login-nickname-label">微信昵称（选填）</view><input wx:if="{{agreementAccepted}}" class="login-nickname-input" type="nickname" maxlength="30" placeholder="请选择或输入昵称" bindinput="handleNicknameInput" />
         <button wx:if="{{agreementAccepted}}" class="login-primary" open-type="getPhoneNumber" bindgetphonenumber="handlePhoneNumber" loading="{{loginLoading}}" disabled="{{loginLoading}}">手机号快捷登录</button>
         <button wx:else class="login-primary" bindtap="requestAgreement">手机号快捷登录</button>
         <view wx:if="{{loginMessage}}" class="login-message">{{loginMessage}}</view>

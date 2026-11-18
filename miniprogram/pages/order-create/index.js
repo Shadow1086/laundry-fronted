@@ -1,3 +1,4 @@
+const newcomerTour = require('../../services/newcomer-tour');
 const authService = require('../../services/auth-service');
 const cabinetService = require('../../services/cabinet-service');
 const orderApi = require('../../api/order');
@@ -8,7 +9,7 @@ const serviceConfigApi = require('../../api/service-config');
 const cabinetApi = require('../../api/cabinet');
 const session = require('../../utils/session');
 
-Page({
+Page(newcomerTour.attachPage({
   data: {
     clothingGroups: [],
     activeGroupKey: '',
@@ -492,4 +493,4 @@ Page({
     }
     this.setData({ cabinetType, inlineMessage: '' });
   },
-});
+}, 'create'));

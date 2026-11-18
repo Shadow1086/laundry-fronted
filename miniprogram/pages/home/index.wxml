@@ -1,5 +1,5 @@
 <view class="home-shell">
-  <scroll-view class="home-scroll" scroll-y="true" enhanced="true" show-scrollbar="false">
+  <scroll-view scroll-top="{{newcomerScrollTop}}" bindscroll="handleNewcomerScroll" class="home-scroll" scroll-y="true" enhanced="true" show-scrollbar="false">
     <view class="hero">
       <view class="hero-brand">
         <view class="brand-mark">净</view>
@@ -18,7 +18,7 @@
         <view class="welcome-desc">{{authenticated ? '洗护进度随时可查' : '欢迎浏览柜机与洗护服务'}}</view>
         <view wx:if="{{!authenticated}}" class="section-action" bindtap="requireAuth">登录 / 注册</view>
       </view>
-      <view class="welcome-orders" bindtap="openOrders" hover-class="welcome-orders-hover">
+      <view id="guide-orders" class="welcome-orders" bindtap="openOrders" hover-class="welcome-orders-hover">
         <image src="/assets/icons/订单.svg" mode="aspectFit" />
         <text>我的订单</text>
         <text class="welcome-orders-arrow">›</text>
@@ -27,12 +27,12 @@
     <view class="cabinet-section fade-in delay-1">
       <view class="cabinet-section-label"><text class="online-dot"></text>智能柜服务</view>
       <view class="cabinet-actions">
-        <view class="cabinet-action cabinet-action-deposit" bindtap="scanCabinet" data-type="deposit" hover-class="cabinet-action-hover">
+        <view id="guide-place-order" class="cabinet-action cabinet-action-deposit" bindtap="scanCabinet" data-type="deposit" hover-class="cabinet-action-hover">
           <view class="cabinet-action-icon"><image src="/assets/icons/home-wash.svg" mode="aspectFit" /></view>
           <view class="cabinet-action-title">我要下单</view>
           <view class="cabinet-action-desc">选衣物与投放柜机</view>
         </view>
-        <view class="cabinet-action cabinet-action-pickup" bindtap="scanCabinet" data-type="pickup" hover-class="cabinet-action-hover">
+        <view id="guide-home-pickup" class="cabinet-action cabinet-action-pickup" bindtap="scanCabinet" data-type="pickup" hover-class="cabinet-action-hover">
           <view class="cabinet-action-icon"><image src="/assets/icons/home-pickup.svg" mode="aspectFit" /></view>
           <view class="cabinet-action-title">取衣开柜</view>
           <view class="cabinet-action-desc">本人订单或凭码代取</view>
@@ -79,6 +79,7 @@
       <view class="auth-kicker">首次使用</view>
       <view class="auth-title">授权手机号，立即开始洗护</view>
       <view class="auth-copy">仅用于订单通知、存衣和取衣验证，不会公开展示。</view>
+      <view wx:if="{{agreementAccepted}}" class="auth-nickname-label">微信昵称（选填）</view><input wx:if="{{agreementAccepted}}" class="auth-nickname-input" type="nickname" maxlength="30" placeholder="请选择或输入昵称" bindinput="handleNicknameInput" />
       <button
         wx:if="{{agreementAccepted}}"
         class="auth-button"
@@ -96,3 +97,4 @@
     </view>
   </view>
 </view>
+<newcomer-guide visible="{{newcomerVisible}}" user-key="{{newcomerUserKey}}" step="{{newcomerStep}}" target="{{newcomerTarget}}" progress="{{newcomerProgress}}" can-previous="{{newcomerCanPrevious}}" last-step="{{newcomerLastStep}}" bind:targetmissing="handleNewcomerTargetMissing" bind:next="handleNewcomerNext" bind:previous="handleNewcomerPrevious" bind:dismiss="handleNewcomerDismiss" />

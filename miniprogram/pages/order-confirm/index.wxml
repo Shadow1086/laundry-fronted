@@ -27,6 +27,22 @@
     </view>
   </view>
 
+  <view class="section remark-section">
+    <view class="section-title remark-title-row">
+      <text>订单备注</text>
+      <text class="remark-counter">{{remark.length}}/500</text>
+    </view>
+    <textarea
+      class="remark-input"
+      value="{{remark}}"
+      maxlength="500"
+      auto-height="true"
+      placeholder="可填写取送衣物的补充说明（选填）"
+      placeholder-class="remark-placeholder"
+      bindinput="onRemarkInput"
+    />
+  </view>
+
   <view class="section price-section">
     <view class="price-label">预估价格（非最终价）</view>
     <view class="price-val"><text>¥</text>{{estimate}}</view>
@@ -37,10 +53,11 @@
   <view class="action-bar">
     <view class="btn-cancel" hover-class="btn-hover" bindtap="cancel">取消</view>
     <view
-      class="btn-confirm {{submitting ? 'btn-loading' : ''}}"
+      id="guide-submit" class="btn-confirm {{submitting ? 'btn-loading' : ''}}"
       hover-class="{{submitting ? '' : 'btn-hover'}}"
       bindtap="confirmOrder"
     >{{submitting ? '提交中…' : '确认下单'}}</view>
   </view>
 
 </view>
+<newcomer-guide visible="{{newcomerVisible}}" user-key="{{newcomerUserKey}}" step="{{newcomerStep}}" target="{{newcomerTarget}}" progress="{{newcomerProgress}}" can-previous="{{newcomerCanPrevious}}" last-step="{{newcomerLastStep}}" bind:targetmissing="handleNewcomerTargetMissing" bind:next="handleNewcomerNext" bind:previous="handleNewcomerPrevious" bind:dismiss="handleNewcomerDismiss" />

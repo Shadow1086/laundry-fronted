@@ -67,10 +67,15 @@ App({
       wx.reLaunch({ url });
       return true;
     }
-    if (scanned.type === 'order-scene') {
+    if (scanned.type === 'order-scene' || scanned.type === 'order') {
       session.consumePendingCabinetScene();
       session.consumePendingLaunch();
-      const target = scanContext.buildLaunchUrl({ path: 'pages/order-detail/order-detail', query: { scanSceneKey: scanned.value } });
+      const target = scanContext.buildLaunchUrl({
+        path: 'pages/order-detail/order-detail',
+        query: scanned.type === 'order-scene'
+          ? { scanEntry: '1', scanSceneKey: scanned.value }
+          : { scanEntry: '1', orderId: scanned.value },
+      });
       const url = authService.isAuthenticated()
         ? scanContext.resolvePendingLaunch(target, authService.getRole()) : target;
       if (authService.isAuthenticated()) { wx.reLaunch({ url }); } else { session.savePendingLaunch(url); authService.redirectToLogin(); }

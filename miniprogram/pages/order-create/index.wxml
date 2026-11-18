@@ -4,7 +4,7 @@
     <view class="location-header">
       <view class="location-title-row">
         <text class="location-name" bindtap="openCabinetMap">{{selectedStoreInfo.name}}</text>
-        <view class="switch-store" hover-class="switch-store-hover" bindtap="chooseLocation">切换营业点</view>
+        <view id="guide-cabinet" class="switch-store" hover-class="switch-store-hover" bindtap="chooseLocation">切换营业点</view>
       </view>
       <view class="location-tags">
         <view class="location-status {{businessStatus === 0 ? 'location-status-closed' : ''}} {{businessStatus === null ? 'location-status-unknown' : ''}}">
@@ -29,7 +29,7 @@
         <view
           wx:for="{{clothingGroups}}"
           wx:key="key"
-          class="group-nav-item {{activeGroupKey === item.key ? 'active' : ''}}"
+          id="{{index === 0 ? 'guide-category' : ''}}" class="group-nav-item {{activeGroupKey === item.key ? 'active' : ''}}"
           bindtap="selectGroup"
           data-key="{{item.key}}"
         >
@@ -38,7 +38,7 @@
         </view>
       </view>
 
-      <scroll-view class="item-panel" scroll-y="true" scroll-into-view="{{scrollIntoView}}" enhanced="true" show-scrollbar="false">
+      <scroll-view bindscroll="handleNewcomerScroll" class="item-panel" scroll-y="true" scroll-into-view="{{scrollIntoView}}" enhanced="true" show-scrollbar="false">
         <view id="item-panel-top"></view>
 
         <view class="item-list">
@@ -66,7 +66,7 @@
               <view class="stepper">
                 <view class="step-button {{item.count === 0 ? 'disabled' : ''}}" hover-class="step-button-hover" bindtap="decrease" data-id="{{item.id}}">−</view>
                 <view class="step-number">{{item.count}}</view>
-                <view class="step-button plus" hover-class="plus-button-hover" bindtap="increase" data-id="{{item.id}}">＋</view>
+                <view id="{{index === 0 ? 'guide-add' : ''}}" class="step-button plus" hover-class="plus-button-hover" bindtap="increase" data-id="{{item.id}}">＋</view>
               </view>
             </view>
           </view>
@@ -123,7 +123,7 @@
     </view>
     <view class="confirm-actions">
       <button class="secondary-button" bindtap="backToEdit"><text>返回修改</text></button>
-      <button class="primary-button" bindtap="submitOrder"><text>下一步</text></button>
+      <button id="guide-submit" class="primary-button" bindtap="submitOrder"><text>下一步</text></button>
     </view>
   </view>
 
@@ -138,7 +138,7 @@
         <text class="selection-detail">{{showSelection ? '收起' : '明细'}} ›</text>
       </view>
       <view
-        class="submit-button {{!selectedCount ? 'disabled' : ''}}"
+        id="guide-confirm" class="submit-button {{!selectedCount ? 'disabled' : ''}}"
         hover-class="{{selectedCount ? 'submit-button-hover' : 'none'}}"
         bindtap="beginConfirm"
       >
@@ -186,3 +186,4 @@
     </view>
   </view>
 </view>
+<newcomer-guide visible="{{newcomerVisible}}" user-key="{{newcomerUserKey}}" step="{{newcomerStep}}" target="{{newcomerTarget}}" progress="{{newcomerProgress}}" can-previous="{{newcomerCanPrevious}}" last-step="{{newcomerLastStep}}" bind:targetmissing="handleNewcomerTargetMissing" bind:next="handleNewcomerNext" bind:previous="handleNewcomerPrevious" bind:dismiss="handleNewcomerDismiss" />

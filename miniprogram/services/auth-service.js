@@ -3,6 +3,7 @@ const userApi = require('../api/user');
 const session = require('../utils/session');
 const storage = require('../utils/storage');
 const storageKey = require('../constants/storage-key');
+const newcomerCoordinator = require('./newcomer-coordinator');
 const { ACCOUNT_TYPE_ROLE, ADMIN_ROLES, ROLE, ROLE_GRANTS } = require('../constants/role');
 
 // 无权访问时提示语的停留时间，到点再跳走，避免 toast 被新页面立刻覆盖。
@@ -43,12 +44,18 @@ function normalizeUser(source) {
   const value = source || {};
   return {
     ...value,
-    id: value.id || '',
+    id: value.id || value.userId || value.accountId || '',
     username: value.username || value.nickname || value.name || '',
     telephone: value.telephone || value.mobile || value.phone || value.phoneMasked || value.phoneNumber || value.purePhoneNumber || value.phone_masked || '',
     avatarUrl: value.avatarUrl || value.avatar || '',
     accountType: value.accountType || value.role || 'CUSTOMER',
+    onboardingAccountType: value.accountType || '',
   };
+}
+
+function getOnboardingAccountType(user) {
+  return Object.prototype.hasOwnProperty.call(user, 'onboardingAccountType')
+    ? user.onboardingAccountType : (user.accountType || '');
 }
 
 function maskTelephone(telephone) {
@@ -115,6 +122,8 @@ async function fetchAndSaveProfile() {
     const enriched = {
       ...existing,
       ...normalized,
+      id: normalized.id || existing.id,
+      onboardingAccountType: profile.accountType || getOnboardingAccountType(existing),
       username: normalized.username || existing.username,
       telephone: normalized.telephone || existing.telephone,
       avatarUrl: normalized.avatarUrl || existing.avatarUrl,
@@ -145,6 +154,9 @@ async function updateProfile(payload) {
   const updated = {
     ...current,
     ...normalized,
+    id: normalized.id || current.id,
+    accountType: profile.accountType || current.accountType,
+    onboardingAccountType: profile.accountType || getOnboardingAccountType(current),
     username: normalized.username || payload.username || current.username,
     telephone: normalized.telephone || payload.mobile || current.telephone,
   };
@@ -153,9 +165,28 @@ async function updateProfile(payload) {
 }
 
 async function login(payload) {
-  const session = await authApi.login(payload);
+  const requestPayload = { ...(payload || {}) };
+  const nickname = String(requestPayload.nickname || '').trim();
+  delete requestPayload.nickname;
+  const session = await authApi.login(requestPayload);
   saveSession(session);
-  return { token: getToken(), user: await fetchAndSaveProfile() };
+  let user = await fetchAndSaveProfile();
+  let nicknameSaved;
+  if (nickname) {
+    const mobile = user && (user.telephone || user.mobile);
+    if (mobile) {
+      try {
+        user = await updateProfile({ username: nickname, mobile });
+        nicknameSaved = true;
+      } catch (e) {
+        nicknameSaved = false;
+      }
+    } else {
+      nicknameSaved = false;
+    }
+  }
+  const token = getToken();
+  return { token, user, onboarding: newcomerCoordinator.getStatus(user, token), ...(nickname ? { nicknameSaved } : {}) };
 }
 
 function clearSession() {

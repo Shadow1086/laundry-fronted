@@ -76,6 +76,9 @@ page {
   font-size: 24rpx;
   line-height: 1.65;
 }
+.auth-nickname-label { margin-top: 20rpx; color: #526b5d; font-size: 25rpx; }
+.auth-nickname-input { height: 76rpx; margin-top: 10rpx; padding: 0 18rpx; border: 1rpx solid #deebe2; border-radius: 14rpx; color: #17231f; background: #f8fbf9; font-size: 27rpx; }
+.auth-card { max-height: 90vh; overflow-y: auto; }
 
 .auth-button {
   display: flex;
@@ -91,6 +94,8 @@ page {
   font-weight: 600;
   line-height: 1;
 }
+.auth-copy, .auth-message { font-size: 26rpx; }
+.agreement-consent { font-size: 25rpx; line-height: 1.65; }
 
 .auth-button::after {
   border: none;
@@ -803,3 +808,11 @@ page {
     transform: translateY(0);
   }
 }
+
+.store-address, .store-meta { font-size: 24rpx; }
+.section-title { font-size: 33rpx; }
+.auth-message { font-size: 26rpx; }
+.welcome-orders, .cabinet-section-label, .scan-subtitle, .scan-action,
+.hint-title, .benefit-label, .benefit-note, .benefit-action,
+.section-action, .location-tip, .status-pill { font-size: 24rpx; }
+.cabinet-action-desc, .hint-copy { font-size: 23rpx; }

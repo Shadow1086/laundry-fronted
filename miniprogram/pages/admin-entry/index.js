@@ -11,18 +11,23 @@ Page({
   onLoad(options) {
     const context = scanContext.parse(options);
     this._pendingOrderId = context.type === 'order' ? context.value : '';
+    this._pendingScanSceneKey = context.type === 'order-scene' ? context.value : '';
   },
 
   // 用 onShow 而非 onLoad：从子页返回时重新校验，账号被降权后入口会同步消失。
   onShow() {
     if (!authService.requireAdmin()) return;
     const role = authService.getRole();
-    if (this._pendingOrderId && role === ROLE.MANAGER) {
+    if ((this._pendingOrderId || this._pendingScanSceneKey) && role === ROLE.MANAGER) {
       this._openOrderForRole('/pages/area-manager/index');
       return;
     }
-    if (this._pendingOrderId && role === ROLE.STAFF) {
+    if ((this._pendingOrderId || this._pendingScanSceneKey) && role === ROLE.STAFF) {
       this._openOrderForRole('/pages/laundry-staff/index');
+      return;
+    }
+    if ((this._pendingOrderId || this._pendingScanSceneKey) && role === ROLE.ADMIN) {
+      this._openOrderForRole('/pages/area-manager/index');
       return;
     }
     this.setData({
@@ -43,10 +48,12 @@ Page({
 
   _openOrderForRole(path) {
     const pendingOrderId = this._pendingOrderId;
-    const query = pendingOrderId
-      ? `?orderId=${encodeURIComponent(pendingOrderId)}`
-      : '';
+    const pendingScanSceneKey = this._pendingScanSceneKey;
+    const query = pendingScanSceneKey
+      ? `?scanEntry=1&scanSceneKey=${encodeURIComponent(pendingScanSceneKey)}`
+      : (pendingOrderId ? `?orderId=${encodeURIComponent(pendingOrderId)}` : '');
     this._pendingOrderId = '';
+    this._pendingScanSceneKey = '';
     const navigate = pendingOrderId ? wx.reLaunch : wx.navigateTo;
     navigate({ url: `${path}${query}` });
   },

@@ -126,6 +126,7 @@ page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragin
 .list-order-id { font-size: 24rpx; font-weight: 700; color: #286e4f; }
 .list-order-meta { font-size: 20rpx; color: #8b9892; margin-top: 4rpx; }
 .list-order-items { font-size: 22rpx; color: #3a4a42; margin-top: 6rpx; }
+.order-remark { color: #566b60; line-height: 1.45; word-break: break-all; }
 .list-item-actions { display: flex; gap: 12rpx; align-items: center; flex-shrink: 0; margin-left: 16rpx; }
 .list-btn-call { width: 64rpx; height: 64rpx; display: flex; align-items: center; justify-content: center; background: #f0f8f3; border-radius: 50%; font-size: 30rpx; }
 .list-btn-print { height: 64rpx; padding: 0 20rpx; display: flex; align-items: center; justify-content: center; border: 1rpx solid #9bbcac; border-radius: 16rpx; color: #286e4f; background: #fff; font-size: 24rpx; font-weight: 600; box-sizing: border-box; }
@@ -134,3 +135,20 @@ page { background: #f3f6f4; color: #17231f; font-family: 'PingFang SC', 'Hiragin
 .list-empty { padding: 60rpx 0; text-align: center; }
 .list-loading { padding: 60rpx 0; color: #719087; font-size: 24rpx; text-align: center; }
 .empty-text { font-size: 26rpx; color: #b0c0b8; }
+
+/* Order rows use a vertical content/action flow so actions do not steal the text width. */
+.order-list-item { display: block; padding: 28rpx 24rpx 22rpx; }
+.list-item-main { width: 100%; overflow: visible; }
+.list-order-id { font-size: 28rpx; }
+.list-order-meta { margin-top: 8rpx; font-size: 24rpx; line-height: 1.5; }
+.list-order-items { margin-top: 10rpx; font-size: 25rpx; line-height: 1.5; }
+.order-remark { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.list-item-actions { display: flex; width: 100%; margin: 20rpx 0 0; gap: 12rpx; }
+.list-btn-call, .list-btn-print, .list-btn-open { min-height: 76rpx; height: 76rpx; font-size: 26rpx; }
+.list-btn-call { width: 76rpx; }
+.list-btn-print, .list-btn-open { flex: 1; padding: 0 18rpx; }
+.order-detail-card .detail-row { padding: 18rpx 0; font-size: 25rpx; line-height: 1.5; }
+.order-detail-card .order-customer { font-size: 25rpx; line-height: 1.55; }
+.order-detail-card .order-remark { display: block; overflow: visible; -webkit-line-clamp: unset; white-space: normal; }
+.action-row { gap: 20rpx; }
+.action-row .btn-primary, .action-row .btn-secondary { min-height: 96rpx; height: 96rpx; font-size: 30rpx; }

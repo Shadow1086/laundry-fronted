@@ -3,6 +3,7 @@ const errorUtil = require('../../utils/error');
 const orderApi = require('../../api/order');
 const serviceConfigApi = require('../../api/service-config');
 const membershipApi = require('../../api/membership');
+const newcomerTour = require('../../services/newcomer-tour');
 
 Page({
   data: {
@@ -31,6 +32,7 @@ Page({
       { label: '门店地图', icon: '/assets/icons/map-pinned.svg', tone: 'function-teal' },
       { label: '会员权益', icon: '/assets/icons/crown.svg', tone: 'function-rose' },
       { label: '联系客服', icon: '/assets/icons/headset.svg', tone: 'function-green' },
+      { label: '使用帮助', icon: '/assets/icons/info.svg', tone: 'function-blue', isHelp: true },
     ],
   },
 
@@ -130,6 +132,7 @@ Page({
   },
   editProfile() { wx.navigateTo({ url: '/pages/profile-edit/index' }); },
   scanCabinet() { wx.navigateTo({ url: '/pages/order-list/order-list?filter=active' }); },
+  openHelp() { return newcomerTour.openManualGuide(); },
   async callServicePhone() {
     if (this.data.servicePhoneLoading) return;
     this.setData({ servicePhoneLoading: true });

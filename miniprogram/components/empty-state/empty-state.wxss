@@ -3,3 +3,4 @@
 .empty-mark image { width: 42rpx; height: 42rpx; }
 .empty-title { color: #385648; font-size: 30rpx; font-weight: 700; }
 .empty-copy { font-size: 21rpx; line-height: 1.6; margin-top: 12rpx; }
+.empty-copy { font-size: 25rpx; }

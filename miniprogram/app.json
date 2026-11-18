@@ -10,6 +10,7 @@
     "pages/order-confirm/index",
     "pages/order-list/order-list",
     "pages/order-detail/order-detail",
+    "pages/newcomer-order-demo/index",
     "pages/rewash-apply/index",
     "pages/scan-cabinet/scan-cabinet",
     "pages/command-result/command-result",

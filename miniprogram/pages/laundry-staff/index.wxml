@@ -23,13 +23,13 @@
           <view class="list-order-id">{{item.orderNo || '订单号待生成'}}</view>
           <view class="list-order-meta">{{item.customerName}}<text wx:if="{{item.customerPhone}}"> · </text><text wx:if="{{item.customerPhone}}" class="phone-link" data-phone="{{item.customerPhone}}" catchtap="callCustomer">{{item.customerPhone}}</text></view>
           <view class="list-order-meta">{{item.storeName}}</view>
+          <view class="list-order-meta order-remark">备注：{{item.remark || '无备注'}}</view>
           <view wx:if="{{mode === 'history'}}" class="list-order-meta">{{item.statusLabel}}</view>
           <view wx:if="{{mode !== 'history'}}" class="list-status-badge {{mode === 'washing' ? 'badge-post' : 'badge-pre'}}">
             {{mode === 'arrival' ? '确认到店' : '洗护完成'}}
           </view>
         </view>
-        <view wx:if="{{mode === 'history'}}" class="list-btn-print" catchtap="openHistoryPrinter" data-id="{{item.id}}">打印</view>
-        <view wx:else class="list-arrow">›</view>
+        <view class="list-arrow">›</view>
       </view>
     </view>
 
@@ -47,6 +47,7 @@
       </view>
       <view class="order-store">{{order.storeName}}</view> 
       <view class="order-customer">顾客：{{order.customerName}}<text wx:if="{{order.customerPhone}}"> · </text><text wx:if="{{order.customerPhone}}" class="phone-link" data-phone="{{order.customerPhone}}" catchtap="callCustomer">{{order.customerPhone}}</text></view>
+      <view class="order-remark order-customer">备注：{{order.remark || '无备注'}}</view>
       
       <view class="items-list">
         <view class="item-row" wx:for="{{order.items}}" wx:key="name">
@@ -87,7 +88,6 @@
 
     <view class="staff-actions">
       <view class="btn-secondary" hover-class="btn-hover" bindtap="resetScan">返回列表</view>
-      <view class="btn-secondary" hover-class="btn-hover" bindtap="openPrinter">打印标签</view>
       <view wx:if="{{mode === 'arrival'}}" class="btn-primary" hover-class="btn-hover" bindtap="goConfirm">确认到店</view>
       <view wx:else class="btn-primary" hover-class="btn-hover" bindtap="completeWash">{{submitting ? '处理中…' : '确认洗护完成'}}</view>
     </view>
@@ -107,6 +107,7 @@
       </view>
       <view class="order-store">{{order.storeName}}</view>
       <view class="order-customer">顾客：{{order.customerName}}<text wx:if="{{order.customerPhone}}"> · </text><text wx:if="{{order.customerPhone}}" class="phone-link" data-phone="{{order.customerPhone}}" catchtap="callCustomer">{{order.customerPhone}}</text></view>
+      <view class="order-remark order-customer">备注：{{order.remark || '无备注'}}</view>
         <view class="items-list">
           <view class="item-row" wx:for="{{order.items}}" wx:key="name">
           <text>

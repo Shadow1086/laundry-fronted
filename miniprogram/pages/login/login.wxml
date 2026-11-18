@@ -12,6 +12,7 @@
         <view class="phone-preview-note">仅用于订单通知和柜机取衣</view>
       </view>
     </view>
+    <view wx:if="{{agreementAccepted}}" class="nickname-field"><view class="nickname-label">微信昵称（选填）</view><input class="nickname-input" type="nickname" maxlength="30" placeholder="请选择或输入昵称" bindinput="handleNicknameInput" /></view>
     <button wx:if="{{agreementAccepted}}" class="phone-button" open-type="getPhoneNumber" bindgetphonenumber="handlePhoneNumber" loading="{{loading}}" disabled="{{loading}}">手机号快捷登录</button>
     <button wx:else class="phone-button" bindtap="requestAgreement">手机号快捷登录</button>
     <view wx:if="{{message}}" class="inline-message {{messageType}}">{{message}}</view>

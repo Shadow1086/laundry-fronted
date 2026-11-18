@@ -59,6 +59,7 @@ function adaptOrder(raw) {
         ...raw,
         id: String(raw.id ?? raw.orderId ?? ''),
         orderNo: String(raw.orderNo || ''),
+        remark: String(raw.remark || '').trim(),
         status,
         statusLabel: STATUS_LABEL[status] || status,
         storeName: raw.storeName || raw.serviceSiteName || raw.cabinetName || '洗衣订单',
@@ -108,11 +109,18 @@ Page({
 
   onLoad(options) {
     const context = scanContext.parse(options);
+    if (context.type === 'order-scene' && context.value) this._pendingScanSceneKey = context.value;
     if (context.type === 'order' && context.value) this._pendingOrderId = context.value;
   },
 
   onShow() {
     if (!authService.requireRole(ROLE.STAFF)) return;
+    if (this._pendingScanSceneKey) {
+      const sceneKey = this._pendingScanSceneKey;
+      this._pendingScanSceneKey = '';
+      this._activateByScanScene(sceneKey);
+      return;
+    }
     if (this._pendingOrderId) {
       const orderId = this._pendingOrderId;
       this._pendingOrderId = '';
@@ -191,6 +199,9 @@ Page({
     try {
       const raw = await staffOrderApi.getStaffOrderById(orderId);
       if (!raw) throw new Error('未找到对应订单');
+      const mode = this._modeForScannedOrder(raw);
+      if (!mode) return;
+      this.setData({ mode });
       this._enterWorking(raw);
     } catch (error) {
       wx.showToast({ title: error.message || '订单加载失败', icon: 'none' });
@@ -202,16 +213,33 @@ Page({
     try {
       const order = await orderApi.getOrderByScanScene(sceneKey);
       if (!order || !(order.orderId || order.id)) throw new Error('未找到对应订单');
-      this._enterWorking(order);
+      const detail = await staffOrderApi.getStaffOrderById(order.orderId || order.id);
+      if (!detail) throw new Error('未找到对应订单');
+      const mode = this._modeForScannedOrder(detail);
+      if (!mode) return;
+      this.setData({ mode });
+      this._enterWorking(detail);
     } catch (error) {
       wx.showToast({ title: error.message || '订单加载失败', icon: 'none' });
     }
   },
 
+  _modeForScannedOrder(raw) {
+    const stage = String(raw && raw.internalStage || '').toUpperCase();
+    if (stage === 'GARMENT_RECEIVED') return 'arrival';
+    if (stage === 'PRICE_FINAL_CONFIRMED') return 'washing';
+    const status = String(raw && (raw.orderStatus || raw.status) || '').toUpperCase();
+    if (status === 'WASHING' || status === 'CLEANING') return 'washing';
+    wx.showToast({ title: stage === 'WASH_FINISHED' ? '该订单已完成洗护，等待返柜' : '该订单当前无需员工操作', icon: 'none' });
+    return '';
+  },
+
   async tapListOrder(e) {
     const orderId = e.currentTarget.dataset.id;
     if (this.data.mode === 'history') {
-      this.openPrinter(orderId);
+      wx.navigateTo({
+        url: `/pages/order-detail/order-detail?orderId=${encodeURIComponent(String(orderId))}`,
+      });
       return;
     }
     try {
@@ -235,21 +263,9 @@ Page({
     wx.previewImage({ current, urls });
   },
 
-  openPrinter() {
-    const orderId = this.data.order && this.data.order.id;
-    if (!orderId) return;
-    wx.navigateTo({
-      url: `/pages/printer/index?orderId=${encodeURIComponent(orderId)}`,
-    });
-  },
 
-  openHistoryPrinter(e) {
-    const orderId = String(e.currentTarget.dataset.id || '');
-    if (!orderId) return;
-    wx.navigateTo({
-      url: '/pages/printer/index?orderId=' + encodeURIComponent(orderId),
-    });
-  },
+
+
 
   registerCleaning() {
     wx.showToast({ title: '已登记，清洗流程待接入', icon: 'none' });
