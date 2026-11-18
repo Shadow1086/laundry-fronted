@@ -8,6 +8,7 @@ const cabinetService = require('../miniprogram/services/cabinet-service');
 function createPage({ resolveCabinet, stores, locationFails = false }) {
     let definition;
     const dependencies = {
+        '../../services/newcomer-tour': { attachPage: (definition) => definition },
         '../../services/auth-service': { isAuthenticated: () => true },
         '../../services/cabinet-service': { ...cabinetService, loadStores: async () => stores.slice() },
         '../../services/location-service': {

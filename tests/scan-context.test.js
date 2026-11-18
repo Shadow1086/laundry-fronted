@@ -37,15 +37,23 @@ test('订单小程序码仍进入订单场景，普通启动不误识别', () =>
     assert.equal(scanContext.parse({ scene: 1001 }).type, '');
 });
 
-test('订单标签的登录恢复只允许区域管理员和员工进入详情', () => {
+test('订单标签的登录恢复按角色进入对应管理工作页，普通用户回首页', () => {
     const url = `/pages/order-detail/order-detail?scanSceneKey=${key}`;
-    for (const role of ['user', 'admin', '']) {
-        assert.equal(scanContext.resolvePendingLaunch(url, role), '/pages/home/index');
-    }
-    for (const role of ['manager', 'staff']) {
-        assert.equal(scanContext.resolvePendingLaunch(url, role), url);
-    }
+    assert.equal(scanContext.resolvePendingLaunch(`${url}&scanEntry=1`, 'user'), '/pages/home/index');
+    assert.equal(scanContext.resolvePendingLaunch(`${url}&scanEntry=1`, 'staff'), `/pages/laundry-staff/index?scanEntry=1&scanSceneKey=${key}`);
+    assert.equal(scanContext.resolvePendingLaunch(`${url}&scanEntry=1`, 'manager'), `/pages/area-manager/index?scanEntry=1&scanSceneKey=${key}`);
+    assert.equal(scanContext.resolvePendingLaunch(`${url}&scanEntry=1`, 'admin'), `/pages/admin-entry/index?scanEntry=1&scanSceneKey=${key}`);
+    assert.equal(scanContext.resolvePendingLaunch(`${url}&scanEntry=1`, ''), '/pages/home/index');
     assert.equal(scanContext.resolvePendingLaunch('/pages/order-detail/order-detail?orderId=1001', 'user'),
         '/pages/order-detail/order-detail?orderId=1001');
     assert.equal(scanContext.resolvePendingLaunch('/pages/order-create/index', 'user'), '/pages/order-create/index');
+});
+
+test('带 scanEntry 的普通订单码也进入管理工作页，普通订单链接保持详情页', () => {
+    assert.equal(scanContext.resolvePendingLaunch('/pages/order-detail/order-detail?scanEntry=1&orderId=1001', 'staff'),
+        '/pages/laundry-staff/index?scanEntry=1&orderId=1001');
+    assert.equal(scanContext.resolvePendingLaunch('/pages/order-detail/order-detail?scanEntry=1&orderId=1001', 'manager'),
+        '/pages/area-manager/index?scanEntry=1&orderId=1001');
+    assert.equal(scanContext.resolvePendingLaunch('/pages/order-detail/order-detail?orderId=1001', 'staff'),
+        '/pages/order-detail/order-detail?orderId=1001');
 });

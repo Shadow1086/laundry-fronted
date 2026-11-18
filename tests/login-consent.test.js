@@ -9,6 +9,7 @@ function loadPage(route) {
     const calls = { logins: 0, navigation: [] };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../miniprogram/pages', route), 'utf8'), {
         require: (name) => name.includes('cabinet-service') ? { getStores: () => [] }
+            : name.includes('newcomer-tour') ? { attachPage: (definition) => definition }
             : name.includes('constants/role') ? { ROLE: {} } : {},
         Page: (value) => { definition = value; },
         wx: {
