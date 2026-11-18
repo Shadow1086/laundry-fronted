@@ -1,0 +1,29 @@
+<block wx:if="{{visible && layout}}">
+    <view wx:for="{{masks}}" wx:key="index" class="guide-mask" style="{{item}}" catchtap="preventTouchMove" catchtouchmove="preventTouchMove" aria-hidden="true"></view>
+    <view class="guide-highlight" style="{{targetStyle}}" aria-hidden="true"></view>
+    <view class="guide-panel" style="{{bubbleStyle}}" catchtap="preventTouchMove" aria-role="dialog" aria-label="{{step.title}}">
+        <view class="guide-arrow guide-arrow-{{layout.placement}}" style="left:{{layout.arrowLeft}}px;" aria-hidden="true"></view>
+        <view class="guide-header" catchtouchmove="preventTouchMove">
+            <text class="guide-progress">{{progress}}</text>
+            <button class="guide-button guide-close" bindtap="close" aria-label="关闭使用指南">关闭</button>
+        </view>
+        <scroll-view class="guide-scroll" style="height:{{bodyHeight}}px;" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{true}}">
+            <view class="guide-body">
+                <view class="guide-title" aria-role="heading">{{step.title}}</view>
+                <view class="guide-description">{{step.description}}</view>
+                <view wx:for="{{step.paragraphs}}" wx:key="*this" class="guide-description">{{item}}</view>
+                <view wx:for="{{step.items}}" wx:key="label" class="guide-item">
+                    <view class="guide-item-label">{{item.label}}</view>
+                    <view class="guide-description">{{item.description}}</view>
+                </view>
+                <view wx:if="{{lastStep}}" class="guide-last-hint">如果想再次查看帮助，可以点击“使用帮助”。</view>
+            </view>
+        </scroll-view>
+        <view class="guide-footer" catchtouchmove="preventTouchMove">
+            <view class="guide-controls">
+                <button class="guide-button guide-previous" bindtap="previousStep" disabled="{{!canPrevious}}" aria-label="上一步">上一步</button>
+                <button class="guide-button guide-next" bindtap="nextStep" aria-label="{{lastStep ? '完成引导' : '下一步'}}">{{lastStep ? '完成引导' : '下一步'}}</button>
+            </view>
+        </view>
+    </view>
+</block>

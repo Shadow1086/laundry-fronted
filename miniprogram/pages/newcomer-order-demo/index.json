@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "newcomer-guide": "/components/newcomer-guide/index"
+  }
+}

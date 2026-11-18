@@ -1,0 +1,21 @@
+module.exports = {
+  status: '待取件',
+  statusHint: '衣物已存入，等待管理员取件',
+  statusIcon: '/assets/icons/truck.svg',
+  orderNo: 'DEMO-ORDER-0428',
+  userPhone: '17000002468',
+  remark: '请将衣物分开装袋，完成后提醒我取件。',
+  cabinetName: '演示服务点 B 柜',
+  serviceSiteName: '演示洗护中心',
+  serviceSitePhone: '0571-80001234',
+  estimatedPayable: '25.00',
+  finalPayable: '商家验衣后确认',
+  progressSteps: [
+    { key: 'created', name: '已下单', done: true, active: false },
+    { key: 'deposited', name: '已存衣', done: false, active: true },
+    { key: 'washing', name: '洗护中', done: false, active: false },
+    { key: 'returning', name: '待返柜', done: false, active: false },
+    { key: 'pickup', name: '待取衣', done: false, active: false },
+    { key: 'completed', name: '已完成', done: false, active: false },
+  ],
+};

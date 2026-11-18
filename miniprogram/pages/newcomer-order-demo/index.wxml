@@ -1,0 +1,40 @@
+<view class="detail-shell">
+  <view id="demo-order-status" class="status-header status-purple">
+    <view class="status-main">
+      <view class="status-label">{{order.status}}</view>
+      <view class="status-hint">{{order.statusHint}}</view>
+    </view>
+    <view class="status-badge"><image src="{{order.statusIcon}}" mode="aspectFit" /></view>
+  </view>
+
+  <view class="progress-track">
+    <view wx:for="{{order.progressSteps}}" wx:key="key" class="progress-step {{item.done ? 'step-done' : ''}} {{item.active ? 'step-active' : ''}}">
+      <view class="step-dot"></view>
+      <view class="step-name">{{item.name}}</view>
+    </view>
+  </view>
+
+  <view id="demo-order-info" class="section">
+    <view class="section-head">订单信息</view>
+    <view class="info-row"><text class="info-label">订单号</text><text class="info-value info-id">{{order.orderNo}}</text></view>
+    <view class="info-row"><text class="info-label">联系电话</text><text class="info-value">{{order.userPhone}}</text></view>
+    <view class="info-row info-row-remark">
+      <text class="info-label">订单备注</text>
+      <text class="info-value info-value-remark">{{order.remark || '无备注'}}</text>
+    </view>
+    <view class="info-row"><text class="info-label">柜机名称</text><text class="info-value">{{order.cabinetName}}</text></view>
+    <view class="info-row"><text class="info-label">所属处理点</text><text class="info-value">{{order.serviceSiteName}}</text></view>
+    <view class="info-row"><text class="info-label">处理点电话</text><text class="info-value">{{order.serviceSitePhone}}</text></view>
+  </view>
+
+  <view id="demo-price-time" class="section">
+    <view class="section-head">价格信息</view>
+    <view class="info-row"><text class="info-label">预估应付</text><text class="info-value price-confirmed">¥{{order.estimatedPayable}}</text></view>
+    <view class="info-row"><text class="info-label">最终应付</text><text class="info-value info-pending">{{order.finalPayable}}</text></view>
+  </view>
+
+  <view class="action-section">
+    <view class="btn-danger" bindtap="showCancelDemo">取消订单</view>
+  </view>
+</view>
+<newcomer-guide visible="{{newcomerVisible}}" user-key="{{newcomerUserKey}}" step="{{newcomerStep}}" target="{{newcomerTarget}}" progress="{{newcomerProgress}}" can-previous="{{newcomerCanPrevious}}" last-step="{{newcomerLastStep}}" bind:targetmissing="handleNewcomerTargetMissing" bind:next="handleNewcomerNext" bind:previous="handleNewcomerPrevious" bind:dismiss="handleNewcomerDismiss" />

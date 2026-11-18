@@ -1,0 +1,13 @@
+# Local configuration and credentials
+project.private.config.json
+miniprogram/config/baidu-map.local.js
+
+# IDE and local tooling
+.idea/
+.vscode/
+.omo/
+.playwright-mcp/
+.serena/
+
+# OS files
+.DS_Store
